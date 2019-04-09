@@ -1,0 +1,22 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+Vue.use(Router);
+
+import Index from '../view/index'
+export default new Router({
+  //base: '/tool/WaykiMix/',
+  routes: [
+    {
+      path: '/',
+      name: 'index',
+      redirect: '/index',
+      component: Index
+    },
+    {
+      path: '/index',
+      name: 'index',
+      component: Index
+    }
+  ]
+})
+
