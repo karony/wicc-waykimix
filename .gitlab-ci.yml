@@ -1,4 +1,4 @@
-varibaries:
+variables:
    WEB_DIR: '/opt/www/wicc-waykimix'
 
 cache:
