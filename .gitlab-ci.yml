@@ -1,0 +1,9 @@
+upload:
+   script:
+     - /home/devops/ossutil64 cp -r -u waykiBridge.js oss://wiccrepo/devops/js/
+     - /home/devops/ossutil64 cp -r -u picture/ oss://wiccrepo/devops/discover/picture/
+   only:
+    - master
+   tags:
+    - wicc-dev
+   when: on_success
