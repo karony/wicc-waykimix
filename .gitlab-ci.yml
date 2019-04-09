@@ -1,9 +1,24 @@
-upload:
+varibaries:
+   WEB_DIR: '/opt/www/wicc-waykimix'
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+   - build
+   
+deploy for master:
+   stage: build
    script:
-     - /home/devops/ossutil64 cp -r -u waykiBridge.js oss://wiccrepo/devops/js/
-     - /home/devops/ossutil64 cp -r -u picture/ oss://wiccrepo/devops/discover/picture/
+     - whoami
+     - mkdir -p $WEB_DIR
+     - yarn install --network-timeout 1000000
+     - yarn run build
+     - rsync -a --delete ./dist/ $WEB_DIR
+     
    only:
     - master
    tags:
-    - wicc-dev
+    - hk-gw
    when: on_success
