@@ -422,16 +422,20 @@
       },
       getSubmittx(rawtx,methodName){
         let _this = this;
-        //let url =`http://127.0.0.1:`+this.port;
-        _this.$http.post('/api',{
+        let url =`http://127.0.0.1:`+this.port;
+        _this.$http.post(url,{
           'jsonrpc':"2.0",'id':"curltext",'method':methodName,'params':rawtx
         },{
           auth:{
             username:_this.user,password:_this.password
           }
         }).then(function (response) {
-          let res = response.data
+          let res = response.data;
           if(res.result){
+            this.$message({
+              message: 'Success!!!',
+              type: 'success'
+            });
             if(methodName==='submittx'){
               _this.txHash = res.result.hash;
             }else if(methodName==='getcontractregid'){
@@ -440,7 +444,13 @@
               this.invokeTxHash = res.result.txid;
             }
           }else{
-            _this.$message.error(res.error.message)
+            if(methodName==='submittx'){
+              _this.txHash = res.error.message;
+            }else if(methodName==='getcontractregid'){
+              _this.contractRegId = res.error.message;
+            }else{
+              _this.$message.error(res.error.message)
+            }
           }
         }).catch(function (error) {
           _this.$message.error(error.message)
@@ -448,10 +458,12 @@
       },
       check(error, data,from){
         if(error===null){
-          this.$message({
-            message: 'Success!!!',
-            type: 'success'
-          });
+          if(this.network !== 'location'){
+            this.$message({
+              message: 'Success!!!',
+              type: 'success'
+            });
+          }
           if(from==='deploy'){
             this.txHash = data.txid;
           }else if(from==='contractRaw'){
@@ -465,7 +477,7 @@
           if(from==='deploy'){
             this.txHash = '';
           }else if(from==='contractRaw'){
-            this.txHash = '';
+            this.contractRegId = '';
           }else{
             this.invokeTxHash='';
           }

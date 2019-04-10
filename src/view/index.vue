@@ -224,9 +224,6 @@
         this.tabIndex = item.index-1;
         localStorage.setItem("tabIndex",this.tabIndex);
       },
-      arrowLeft(arrow){
-
-      },
       handleNodeClick(key,obj) {
         let _this = this;
         this.currentIndex = 0;
