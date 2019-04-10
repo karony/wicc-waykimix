@@ -9,17 +9,14 @@
         <ul>
           <li class="network">
             <label style="padding-right: 20px;">NetWork  ：
-              <select v-if="network" v-model="network">
+              <select v-model="network">
                 <option :value="account.network">{{account.network}}</option>
                 <option value="location">location</option>
               </select>
-              <select v-model="network" v-else>
-                <option value="location">location</option>
-              </select>
             </label>
-            <label>Port ：<input type="tel" v-model="port"></label>
+            <label v-if="network==='location'">Port ：<input type="tel" v-model="port"></label>
           </li>
-          <li class="input">
+          <li class="input" v-if="network==='location'">
             <label>userName ：<input type="text" v-model="user"></label>
             <label style="margin-left: 15px;">password ：<input type="password" v-model="password"></label>
           </li>
@@ -83,7 +80,8 @@
         <div class="command">
           <p>Call command:</p>
           <input type="text" readonly v-model="sampleCode" />
-          <p class="deployButton" style="margin:15px 0 0 0;border: 1px solid #929292;" @click="InvokeContract">call</p>
+          <p class="wiccNum">Wicc Amount ：<input type="numbel" v-model="wiccNum" />&nbsp;&nbsp;sawi</p>
+          <p class="deployButton" @click="invokeContract">call</p>
         </div>
       </div>
       <div class="runHash">
@@ -155,6 +153,7 @@
         type:'1',
         params: localStorage.getItem('params') ? JSON.parse(localStorage.getItem('params')) : [],
         invokeTxHash:'',
+        wiccNum:0,
         ifGetRegId:false
       }
     },
@@ -270,7 +269,6 @@
         this.getValue();
         localStorage.setItem('sampleCode', this.sampleCode);
         localStorage.setItem('params', JSON.stringify(this.params))
-
       },
       getValue() {
         let str = '';
@@ -287,7 +285,7 @@
         localStorage.setItem('params', JSON.stringify(this.params));
         localStorage.setItem('sampleCode', this.sampleCode)
       },
-      InvokeContract(){
+      invokeContract(){
         let _this = this;
         if(this.contractRegId ===''){
           this.$message({
@@ -303,14 +301,19 @@
           });
           return false
         }
-        try{
-          WiccWallet.callContract(this.contractRegId,this.sampleCode, 0, (error, data) => _this.check(error, data,'InvokeContract')).then(() => {
+        if(_this.network === 'location'){
+          let par=[this.account.address,this.contractRegId,parseInt(this.wiccNum),this.sampleCode,1000000];
+          _this.getSubmittx(par,'callcontracttx')
+        }else{
+          try{
+          WiccWallet.callContract(this.contractRegId,this.sampleCode,parseInt(this.wiccNum), (error, data) => _this.check(error, data,'InvokeContract')).then(() => {
 
-          }, (error) => {
-            this.$message.error(error.message)
-          })
-        }catch(error){
-          this.$message.error("Please install WaykiMax at first.");
+            }, (error) => {
+              this.$message.error(error.message)
+            })
+          }catch(error){
+            this.$message.error("Please install WaykiMax at first.");
+          }
         }
       },
       //复制hash值
@@ -378,8 +381,10 @@
       getContract(){
         let _this = this;
         _this.rotates = 2;
-        if(!_this.network){
-          this.login('0')
+        if(_this.network==='location'){
+          //this.login('0')
+          let txh=[_this.txHash];
+          _this.getSubmittx(txh,'getcontractregid')
         }else{
           if(_this.txHash===''){
             this.$message(' Please get the contract deployment transaction hash first');
@@ -415,6 +420,32 @@
           },1100)
         }
       },
+      getSubmittx(rawtx,methodName){
+        let _this = this;
+        //let url =`http://127.0.0.1:`+this.port;
+        _this.$http.post('/api',{
+          'jsonrpc':"2.0",'id':"curltext",'method':methodName,'params':rawtx
+        },{
+          auth:{
+            username:_this.user,password:_this.password
+          }
+        }).then(function (response) {
+          let res = response.data
+          if(res.result){
+            if(methodName==='submittx'){
+              _this.txHash = res.result.hash;
+            }else if(methodName==='getcontractregid'){
+              _this.contractRegId = res.result.regid;
+            }else{
+              this.invokeTxHash = res.result.txid;
+            }
+          }else{
+            _this.$message.error(res.error.message)
+          }
+        }).catch(function (error) {
+          _this.$message.error(error.message)
+        });
+      },
       check(error, data,from){
         if(error===null){
           this.$message({
@@ -424,7 +455,8 @@
           if(from==='deploy'){
             this.txHash = data.txid;
           }else if(from==='contractRaw'){
-            this.txHash = data.rawtx;
+            let rawtx = [data.rawtx];
+            this.getSubmittx(rawtx,'submittx')
           }else{
             this.invokeTxHash = data.txid;
           }

@@ -12,16 +12,21 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/v1': {
-        target: 'https://baas-test.wiccdev.org',
+        target: 'https://baas-test.wiccdev.org', 
         changeOrigin: true
       },
       '/dev': {
         target: 'https://baas.wiccdev.org',
         changeOrigin: true,
         pathRewrite: {'^/dev' : ''},
+      },
+      '/api':{
+        target: 'https://testnode.wiccdev.org',
+        changeOrigin: true,
+        pathRewrite: {'^/api' : ''}
       }
     },
-    secure: false,
+    secure: true,
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8282, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined

@@ -14,14 +14,11 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "codemirror": "^5.44.0",
     "element-ui": "^2.6.1",
     "file-saver": "^2.0.1",
-    "js-md5": "^0.7.3",
     "vue": "^2.5.2",
     "vue-codemirror": "^4.0.5",
     "vue-draggable-resizable": "^2.0.0-rc1",
-    "vue-jsonp": "^0.1.8",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

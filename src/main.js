@@ -7,8 +7,6 @@ import axios from 'axios'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/style.css'
-import md5 from 'js-md5';
-Vue.prototype.$md5 = md5;
 Vue.use(ElementUI);
 Vue.prototype.$http= axios;
 Vue.config.productionTip = false;
