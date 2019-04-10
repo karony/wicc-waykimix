@@ -430,8 +430,8 @@
       },
       getSubmittx(rawtx,methodName){
         let _this = this;
-        let url =`http://127.0.0.1:`+this.port;
-        _this.$http.post('/api',{
+        let url =`http://127.0.0.1:${this.port}`;
+        _this.$http.post(url,{
           'jsonrpc':"2.0",'id':"curltext",'method':methodName,'params':rawtx
         },{
           auth:{
@@ -440,7 +440,7 @@
         }).then(function (response) {
           let res = response.data;
           if(res.result){
-            this.$message({
+            _this.$message({
               message: 'Success!!!',
               type: 'success'
             });
@@ -453,7 +453,7 @@
             }
           }else{
             if(methodName==='submittx'){
-              _this.txHash = res.error.message;
+              _this.$message.error(res.error.message)
             }else if(methodName==='getcontractregid'){
               _this.contractRegId = res.error.message;
             }else{

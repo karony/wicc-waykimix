@@ -296,12 +296,12 @@
       onSubmit(){
         let _this = this;
         if(_this.fileName===''){
-          this.$message('Please enter the name of the file.');
+          _this.$message('Please enter the name of the file.');
           return false ;
         }
         _this.fileName = _this.fileName.split('.')[0];
         if(_this.getResult(_this.fileName)){
-          this.$message('The file name you entered already exists. Please re-enter it.');
+          _this.$message('The file name you entered already exists. Please re-enter it.');
           return false ;
         }
         _this.code= '';
@@ -311,9 +311,9 @@
         (_this.localTree)[time]={label:_this.fileName+'.lua',content:''};
         localStorage.setItem("localTab", JSON.stringify(_this.localTab));
         localStorage.setItem("localTree", JSON.stringify(_this.localTree));
-        this.currentTabHash = time ;
+        _this.currentTabHash = time ;
         localStorage.setItem("currentTabHash",_this.currentTabHash);
-        this.fileName='';
+        _this.fileName='';
       },
       jsReadFiles(ev) {
         let _this = this;
