@@ -306,14 +306,19 @@
           });
           return false
         }
-        try{
+        if(_this.network === 'location'){
+          let par=[this.account.address,this.contractRegId,parseInt(this.wiccNum),this.sampleCode,1000000];
+          _this.getSubmittx(par,'callcontracttx')
+        }else{
+          try{
           WiccWallet.callContract(this.contractRegId,this.sampleCode,parseInt(this.wiccNum), (error, data) => _this.check(error, data,'InvokeContract')).then(() => {
 
-          }, (error) => {
-            this.$message.error(error.message)
-          })
-        }catch(error){
-          this.$message.error("Please install WaykiMax at first.");
+            }, (error) => {
+              this.$message.error(error.message)
+            })
+          }catch(error){
+            this.$message.error("Please install WaykiMax at first.");
+          }
         }
       },
       //复制hash值
@@ -337,11 +342,11 @@
         _this.$nextTick(() => {
           try{
             WiccWallet.getDefaultAccount().then((data) => {
-              //_this.network = data.network;
+              _this.network = data.network;
               _this.account = data;
             },(error) => {
               _this.$message.error(error.message);
-             // _this.network = null;
+              _this.network = null;
               _this.account = {};
             })
           }catch(error){
@@ -354,28 +359,45 @@
       },
       deployButton(){
         let _this = this;
-        this.login('0');
-        setTimeout(function(){
+        if(_this.network !== 'location'){
+          this.login('0');
+          setTimeout(function(){
+            try{
+              WiccWallet.publishContract(_this.code, '', (error, data) => _this.check(error, data,'deploy')).then(() => {
+              }, (error) => {
+                _this.$message.error(error.message);
+              })
+            }catch(error){
+              _this.$message.error("Please install WaykiMax at first.");
+            }
+          },100);
+        }else{
+          localStorage.setItem("port",_this.port);
+          localStorage.setItem("password",_this.password);
+          localStorage.setItem("user",_this.user);
           try{
-            WiccWallet.publishContract(_this.code, '', (error, data) => _this.check(error, data,'deploy')).then(() => {
+            WiccWallet.genPublishContractRaw('mylib = require "mylib"', '', (error, data) => _this.check(error, data,'contractRaw')).then(() => {
+
             }, (error) => {
-              this.$message.error(error.message);
-            })
+              _this.$message.error(error.message);
+            });
           }catch(error){
-            this.$message.error("Please install WaykiMax at first.");
+            _this.$message.error("Please install WaykiMax at first.");
           }
-        },100);
+        }
       },
       getContract(){
         let _this = this;
         _this.rotates = 2;
-        if(!_this.account.network){
-          this.login('0')
+        if(_this.network==='location'){
+          //this.login('0')
+          let txh=[_this.txHash];
+          _this.getSubmittx(txh,'getcontractregid')
         }else{
           if(_this.txHash===''){
             this.$message(' Please get the contract deployment transaction hash first');
           }else{
-            if(_this.account.network==='mainnet'){
+            if(_this.network==='mainnet'){
               _this.reAPI = 'https://baas.wiccdev.org/v1/api/contract/regid';
             }else{
               _this.reAPI = 'https://baas-test.wiccdev.org/v1/api/contract/regid';
@@ -442,23 +464,30 @@
           _this.$message.error(error.message)
         });
       },
-      check(error, data,from) {
-        if (error === null) {
-          this.$message({
-            message: 'Success!!!',
-            type: 'success'
-          });
-          if (from === 'deploy') {
+      check(error, data,from){
+        if(error===null){
+          if(this.network !== 'location'){
+            this.$message({
+              message: 'Success!!!',
+              type: 'success'
+            });
+          }
+          if(from==='deploy'){
             this.txHash = data.txid;
-          } else {
+          }else if(from==='contractRaw'){
+            let rawtx = [data.rawtx];
+            this.getSubmittx(rawtx,'submittx')
+          }else{
             this.invokeTxHash = data.txid;
           }
-        } else {
+        }else{
           this.$message.error(error.message);
-          if (from === 'deploy') {
+          if(from==='deploy'){
             this.txHash = '';
-          } else {
-            this.invokeTxHash = '';
+          }else if(from==='contractRaw'){
+            this.contractRegId = '';
+          }else{
+            this.invokeTxHash='';
           }
         }
       }
