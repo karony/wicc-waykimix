@@ -11,14 +11,14 @@
             <label style="padding-right: 20px;">NetWork  ：
               <select v-model="network">
                 <option :value="account.network">{{account.network}}</option>
-                <option value="location">location</option>
+                <option value="location">{{'location'| filts }}</option>
               </select>
             </label>
             <label v-if="network==='location'">Port ：<input type="tel" v-model="port"></label>
           </li>
           <li class="input" v-if="network==='location'">
-            <label>userName ：<input type="text" v-model="user"></label>
-            <label style="margin-left: 15px;">password ：<input type="password" v-model="password"></label>
+            <label>RpcUsername ：<input type="text" v-model="user"></label>
+            <label style="margin-left: 15px;">RpcPassword ：<input type="password" v-model="password"></label>
           </li>
           <li>Account ：<p id="address">{{account.address}}<i style="cursor: pointer;font-size: 16px;" data-clipboard-target="#address" @click = "copy('.address')" class="el-icon-tickets address"></i></p></li>
         </ul>
@@ -119,9 +119,14 @@
       code: String,
       tabIndex:Number
     },
+    filters:{
+      filts:function(arg){
+        return 'Local Testnet Node'
+      }
+    },
     watch:{
       tabIndex(val){
-        return this.tabIndex = parseInt(val)
+        return this.tabIndex = parseInt(val);
         if(this.tabIndex===1 && this.txHash===''){
          this.contractRegId = '' ;
         }
@@ -130,9 +135,9 @@
     data () {
       return {
         ifShowN:false,
-        port:8080,
-        password:'',
-        user:'',
+        port:localStorage.getItem('port')?localStorage.getItem('port'):'6968',
+        password:localStorage.getItem('password')?localStorage.getItem('password'):'wicc123',
+        user:localStorage.getItem('user')?localStorage.getItem('user'):'waykichain',
         network:'location',
         account:{},
         rotates:0,
@@ -367,8 +372,11 @@
             }
           },100);
         }else{
+          localStorage.setItem("port",_this.port);
+          localStorage.setItem("password",_this.password);
+          localStorage.setItem("user",_this.user);
           try{
-            WiccWallet.genPublishContractRaw('mylib = require "mylib"', '33333', (error, data) => _this.check(error, data,'contractRaw')).then(() => {
+            WiccWallet.genPublishContractRaw('mylib = require "mylib"', '', (error, data) => _this.check(error, data,'contractRaw')).then(() => {
 
             }, (error) => {
               _this.$message.error(error.message);
@@ -423,7 +431,7 @@
       getSubmittx(rawtx,methodName){
         let _this = this;
         let url =`http://127.0.0.1:`+this.port;
-        _this.$http.post(url,{
+        _this.$http.post('/api',{
           'jsonrpc':"2.0",'id':"curltext",'method':methodName,'params':rawtx
         },{
           auth:{
