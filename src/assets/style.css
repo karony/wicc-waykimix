@@ -13,21 +13,6 @@ body {
   background-color:#2b2b2b;
 }
 
-/* override codemirror*/
-.CodeMirror {
-  border: none;
-  height: auto;
-}
-.CodeMirror-hscrollbar {
-  overflow-x: auto;
-}
-
-.cm-s-monokai .CodeMirror-gutters,
-.cm-s-monokai.CodeMirror {
-  background-color: #2b2b2b;
-  /* background-color: #2b2b2b; */
-}
-
 /* override elementui*/
 .el-input,
 .el-select,

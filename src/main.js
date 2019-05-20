@@ -11,9 +11,6 @@ Vue.use(ElementUI);
 Vue.prototype.$http= axios;
 Vue.config.productionTip = false;
 
-import { codemirror } from 'vue-codemirror'
-import 'codemirror/lib/codemirror.css'
-Vue.use(codemirror);
 
 /* eslint-disable no-new */
 new Vue({
