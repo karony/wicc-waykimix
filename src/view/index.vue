@@ -88,13 +88,17 @@
             lang="lua"
             theme="monokai"
             :autoComplete="true"
-            :style="{fontSize: fontSize + 'px', height: (contentHeight-110) + 'px'}"
+            :style="{fontSize: fontSize + 'px', height: (contentHeight-305) + 'px'}"
           ></editor>
         </div>
         <div class="line3">
           <select class="fontSize" v-model="fontSize">
             <option v-for="item in fontSizeList" :value="item" :key="item.id">{{item}}</option>
           </select>
+          <div class="logDiv" >
+            <p v-for="item in errorLogs" v-bind:key="item.id">{{item.t}}: <span style="color:red">{{item.log}}</span> </p>
+            
+          </div>
         </div>
       </el-main>
     </el-container>
@@ -121,7 +125,7 @@
             >{{item.name}}</p>
           </div>
           <div style="color: #fff;padding:10px;">
-            <v-execute :code="code" :tabIndex="tabIndex"></v-execute>
+            <v-execute :code="code" :tabIndex="tabIndex" @errorLog="errorLog"></v-execute>
           </div>
         </div>
       </vue-draggable-resizable>
@@ -185,7 +189,8 @@ export default {
       showShade: false,
       code: "",
       currentIndex: localStorage.getItem("currentIndex") || 0,
-      fileName: ""
+      fileName: "",
+      errorLogs:[],
     };
   },
   watch: {
@@ -205,8 +210,21 @@ export default {
       this.code = this.localTab[parseInt(this.currentTabHash)].content;
     }
     this.getDefault();
+    let log = localStorage.getItem('logInfo')
+    if (log){
+      this.errorLogs = JSON.parse(log)
+    }
   },
   methods: {
+    errorLog(error){
+      let time = new Date();
+      let errorLog = {
+        t:time,
+        log:error,
+      }
+      this.errorLogs.push(errorLog)
+      localStorage.setItem('logInfo',JSON.stringify(this.errorLogs))
+    },
     change(code) {},
     editorInit: function() {
       require("brace/ext/language_tools"); //language extension prerequsite...

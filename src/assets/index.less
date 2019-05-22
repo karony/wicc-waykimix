@@ -96,43 +96,42 @@
         border-bottom: 2px solid #E91E63;
       }
     }
-    .code{
-      font-size: 13px;line-height: 18px;white-space: pre-wrap;
-      width:calc(100% - 20px);height:calc(100% - 40px);background-color:#272822;padding: 10px;
-      color: #fff;overflow: auto;
-    }
   }
   .line3{
+    z-index: 99;
     width: 100%;color:#fff;
-    background-color:#263238;
-    height:30px;
+    background-color:#444;
+    height:250px;
     position: absolute;
-    cursor:s-resize;
     bottom: 0;
     display: inline-block;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    // border-bottom: 5px solid transparent;
+    overflow: hidden;
+    padding-bottom: 1px;
+    padding-top: 25px;
     .fontSize{
+      top: 0px;
       position: absolute;
-      right: 10px;
-      top:-2px;
+      right: 8px;
       z-index: 1000000;
-      font-size: 15px;
+      font-size: 14px;
       color: #999;
       width: 48px;
       text-align: center;
       height:25px;
       line-height: 25px;
       background-color:#444;
-      border: 1px solid #444;
     }
-    ::after{
-      content: "";
-      display: block;
-      height: 2px;
-      width: 20px;
-      border-top: 1px solid rgba(0, 0, 0, 0.2);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    .logDiv{
+      background:black;
+      height:250px;
+      overflow-y:auto;
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 10px;
+      box-sizing: border-box;
+      color: rgba(255, 255, 255, 0.9);
     }
   }
 }

@@ -203,10 +203,10 @@
 
 <script>
 import Clipboard from "clipboard";
-import {Base64} from "js-base64"
+import { Base64 } from "js-base64";
 import Tool from "./tool";
-import Vue from "vue"
-Vue.use(Base64)
+import Vue from "vue";
+Vue.use(Base64);
 export default {
   name: "execute",
   components: {
@@ -291,7 +291,7 @@ export default {
           }
         );
       } catch (error) {
-        this.$message.error("Please install WaykiMax at first.");
+        this.$emit("errorLog","Please install WaykiMax at first.");
       }
     };
   },
@@ -453,11 +453,11 @@ export default {
         ).then(
           () => {},
           error => {
-            this.$message.error(error.message);
+            this.$emit("errorLog",error.message);
           }
         );
       } catch (error) {
-        this.$message.error("Please install WaykiMax at first.");
+        this.$emit("errorLog","Please install WaykiMax at first.");
       }
     },
     //复制hash值
@@ -486,13 +486,13 @@ export default {
               _this.account = data;
             },
             error => {
-              _this.$message.error(error.message);
+              _this.$emit("errorLog",error.message);
               // _this.network = null;
               _this.account = {};
             }
           );
         } catch (error) {
-          _this.$message.error("Please install WaykiMax at first.");
+          _this.$emit("errorLog","Please install WaykiMax at first.");
         }
       });
       setTimeout(function() {
@@ -500,44 +500,42 @@ export default {
       }, 1100);
     },
     deployButton() {
-
       let _this = this;
       let url = "http://runcode-api2-ng.dooccn.com/compile2";
       let para = {
         language: 25,
-        code:Base64.encode(_this.code),
+        code: Base64.encode(_this.code),
         stdin: 123
       };
       _this.$http.post(url, para).then(res => {
-        let errorMsg = res.errors
-        if (errorMsg != ''){
-          let iii = `${errorMsg}`.indexOf('syntax')
-          console.log(iii)
-          if (iii != -1){
-            alert('代码错误')
+        let errorMsg = res.data.errors;
+
+        if (errorMsg != "") {
+          let iii = errorMsg.indexOf("module");
+          if (iii == -1) {
+            this.$emit("errorLog", errorMsg);
+            return;
           }
+          _this.deploy(_this);
+          return;
         }
+        _this.deploy(_this);
       });
-
-      return;
-
-
-
-
-
-      this.login("0");
-      setTimeout(function() {
+    },
+    deploy(_this) {
+      _this.login("0");
+      setTimeout(() => {
         try {
           WiccWallet.publishContract(_this.code, "", (error, data) =>
             _this.check(error, data, "deploy")
           ).then(
             () => {},
             error => {
-              this.$message.error(error.message);
+              this.$emit("errorLog",error.message);
             }
           );
         } catch (error) {
-          this.$message.error("Please install WaykiMax at first.");
+          this.$emit("errorLog","Please install WaykiMax at first.");
         }
       }, 100);
     },
@@ -578,11 +576,11 @@ export default {
                   _this.contractRegId = data.data.error.message;
                 }
               } else {
-                _this.$message.error(data.message);
+                _this.$emit("errorLog",data.message);
               }
             })
             .catch(function(error) {
-              _this.$message.error(error.message);
+              _this.$emit("errorLog",error.message);
             });
         }
         setTimeout(function() {
@@ -625,16 +623,16 @@ export default {
             }
           } else {
             if (methodName === "submittx") {
-              _this.$message.error(res.error.message);
+              _this.$emit("errorLog",res.error.message);
             } else if (methodName === "getcontractregid") {
               _this.contractRegId = res.error.message;
             } else {
-              _this.$message.error(res.error.message);
+              _this.$emit("errorLog",res.error.message);
             }
           }
         })
         .catch(function(error) {
-          _this.$message.error(error.message);
+          _this.$emit("errorLog",error.message);
         });
     },
     check(error, data, from) {
@@ -649,7 +647,7 @@ export default {
           this.invokeTxHash = data.txid;
         }
       } else {
-        this.$message.error(error.message);
+        this.$emit("errorLog",error.message);
         if (from === "deploy") {
           this.txHash = "";
         } else {
