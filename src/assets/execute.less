@@ -7,27 +7,39 @@
   .deploy{
     width: 100%;
     .environment{
-      background-color: #3C3C3C;
       padding:5px 10px;
       .title{
-        height: 40px;
-        line-height: 40px;
-        font-size:16px;
+        margin-top: 18px;
+        margin-bottom: 11px;
+        font-size:14px;
+        color: #BBC1CB;
         span{
           display: inline-block;
         }
       }
       ul{
-        background-color: #282828;
-        padding: 10px 5px;
-        font-size: 16px;
+        font-size: 13px;
         li{
+          margin-bottom: 4px;
+          background-color: #181E29;
           line-height: 35px;
-          p{
-            font-size:13px;margin-top:-10px;
-            i{
-              display: inline-block;float:right;margin-right:10px;margin-top: 10px;
-            }
+          color: #5E6778;
+          padding:2.5px 5px;
+          display: flex;
+          justify-content: flex-start;
+          #address{
+            word-wrap: break-word;
+            overflow: hidden;
+            line-height: 20px;
+            margin-top: 8px;
+          }
+          .copyAddress{
+            margin-left:20px;
+            width: 12px;
+          }
+          .wicc{
+            margin-top:1px;font-size:12px;font-style:italic;
+            margin-left: 10px;
           }
           input{
             background-color: #777;
@@ -55,74 +67,75 @@
       }
     }
     .deployButton{
-      height: 35px;
       cursor: pointer;
-      line-height: 35px;
-      font-size: 16px;
+      line-height: 34px;
+      font-size: 15px;
       text-align: center;
       color: #fff;
-      background-color: #3C3C3C;
-      border-radius: 5px;
-      margin:20px 0;
-      border: 1px solid rbg(187,187,187);
-    }
-    .txHash{
-      position: relative;
-      height: 80px;
-      border: 1px solid rbg(187,187,187);
-      background-color: #3C3C3C;
-      padding: 10px;
-      p{
-        font-size: 16px;
-      }
-      textarea{
-        background-color:#282828;
-        width: calc(100% - 10px);
-        margin-top: 10px;
-        line-height: 20px;
-        font-size: 14px;
-        letter-spacing:1px;
-        padding: 2px 5px;
-        color: #fff;
-      }
-      .TxHashCopy{
-        position: absolute;right:10px;
-        bottom:20px;font-size:15px;
-      }
+      background: -webkit-linear-gradient(left, #008DFF , #0062FF);
+      background: -moz-linear-gradient(right, #008DFF , #0062FF); /* Firefox 3.6 - 15 */
+      background: linear-gradient(to right, #008DFF , #0062FF); /* 标准的语法 */
+      border-radius: 3px;
+      margin:20px 10px;
     }
   }
   .run{
     width: 100%;
     .contract{
-      background-color: #3C3C3C;
-      padding:12px 15px;
+      padding:12px 0px;
       .content{
-        padding: 10px 15px;
-        border: 1px solid #929292;
-        background-color:#282828;
+        padding: 12px 10px;
         .title{
-          height:40px;
-          line-height:40px;
-          font-size: 16px;
+          color: #BBC1CB;
+          font-size: 14px;
           span{
             display: inline-block;
           }
         }
         .regid{
-          padding: 10px 0 5px 0;
+          position: relative;
           input{
+            margin-top: 10px;
             display: inline-block;
-            border: 1px solid #929292;
-            width: 70%;
-            padding:5px 0;
-            background-color: #3C3C3C;
-            text-align: center;
-            color: #fff;
+            width: calc(100% - 10px);
+            padding:5px 10px;
+            background-color: #181E29;
+            line-height: 24px;
+            
+            
           }
           span{
-            display:inline-block;vertical-align: middle;font-size: 22px;
-            margin-left:15px;
+            display:inline-block;vertical-align: middle;
+            position: absolute;
+            top:20px;
+            right: 0px;
+            height: 13px;
           }
+          
+        }
+      }
+      .txHash{
+        position: relative;
+        padding: 11px 10px;
+        p{
+          font-size: 14px;
+          color: #BBC1CB;
+        }
+        textarea{
+          background-color:#181E29;
+          width: calc(100% - 10px);
+          margin-top: 10px;
+          line-height: 1.5;
+          font-size: 13px;
+          letter-spacing:1px;
+          padding: 5px 10px;
+          color: #E2E8F0;
+        }
+        .TxHashCopy{
+          position: absolute;
+          left:70px;
+          top:10px;
+          height: 13px;
         }
       }
     }

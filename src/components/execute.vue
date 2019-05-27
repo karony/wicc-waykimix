@@ -4,7 +4,7 @@
       <div class="environment">
         <P class="title">
           <span>Environment</span>
-          <span @click="login('1')" style="padding-left: 50px;">
+          <span @click="login('1')" style="padding-left: 20px;">
             <i style="cursor: pointer;" :class="rotates===1?'go el-icon-refresh':'el-icon-refresh'"></i>
           </span>
         </P>
@@ -33,42 +33,45 @@
             </label>
           </li>
           <li>
-            Account ：
-            <p id="address">
-              {{account.address}}
-              <i
-                style="cursor: pointer;font-size: 16px;"
-                data-clipboard-target="#address"
-                @click="copy('.address')"
-                class="el-icon-tickets address"
-              ></i>
-            </p>
+            <p>Account：</p>
+            <p id="address">{{account.address}}</p>
+            <img
+              style="cursor: pointer;"
+              data-clipboard-target="#address"
+              @click="copy('.copyAddress')"
+              class="copyAddress"
+              src="../assets/copy.svg"
+            >
+          </li>
+          <li>
+            <p>Balance：</p>
+            <p id="address">{{account.balance ? account.balance : 0}}</p>
+            <p class="wicc">WICC</p>
           </li>
         </ul>
-        <p style="margin: 10px auto;">
-          <span style="font-weight: bold;font-size: 15px;">Note</span>:Can change Network and Account in WaykiMax
+        <p style="margin: 12px auto;color:#7F8CA3">
+          <span style>Note：Can change Network and Account in</span>
+          <span style="color:#008DFF">WaykiMax</span>
         </p>
       </div>
-      <p class="deployButton" @click="deployButton">deploy</p>
-      <div class="txHash">
-        <p>TxHash:</p>
-        <textarea v-model="txHash" id="txHash"></textarea>
-        <span class="TxHashCopy">
-          <i
-            data-clipboard-target="#txHash"
-            style="cursor: pointer"
-            @click="copy('.hash')"
-            class="el-icon-tickets hash"
-          ></i>
-        </span>
-      </div>
+      <p class="deployButton" @click="deployButton">Deploy</p>
     </div>
     <div class="run" v-show="tabIndex===1">
       <div class="contract">
+        <div class="txHash">
+        <p>TxHash:</p>
+        <textarea v-model="txHash" id="txHash"></textarea>
+        <span class="TxHashCopy" data-clipboard-target="#txHash" @click="copy('.TxHashCopy')">
+          <img
+            style="cursor: pointer"
+            src="../assets/copy.svg"
+          >
+        </span>
+      </div>
         <div class="content">
           <P class="title">
             <span>Contract Regid:</span>
-            <span @click="getContract()" style="padding-left: 50px;">
+            <span @click="getContract()" style="padding-left: 10px;">
               <i
                 :class="rotates===2?'go el-icon-refresh':'el-icon-refresh'"
                 style="cursor: pointer;"
@@ -79,11 +82,11 @@
             <input
               type="text"
               v-model="contractRegId"
-              :style="{color:ifGetRegId?'#fff':'#E91E63'}"
+              :style="{color:ifGetRegId?'#6D7789':'#E91E63'}"
               id="regId"
             >
             <span data-clipboard-target="#regId" @click="copy('.REGID')" class="REGID">
-              <i style="cursor: pointer;" class="el-icon-tickets"></i>
+              <img style="cursor: pointer;" src="../assets/copy.svg">
             </span>
           </p>
         </div>
@@ -291,7 +294,7 @@ export default {
           }
         );
       } catch (error) {
-        this.$emit("errorLog","Please install WaykiMax at first.");
+        this.$emit("errorLog", "Please install WaykiMax at first.");
       }
     };
   },
@@ -453,11 +456,11 @@ export default {
         ).then(
           () => {},
           error => {
-            this.$emit("errorLog",error.message);
+            this.$emit("errorLog", error.message);
           }
         );
       } catch (error) {
-        this.$emit("errorLog","Please install WaykiMax at first.");
+        this.$emit("errorLog", "Please install WaykiMax at first.");
       }
     },
     //复制hash值
@@ -486,13 +489,13 @@ export default {
               _this.account = data;
             },
             error => {
-              _this.$emit("errorLog",error.message);
+              _this.$emit("errorLog", error.message);
               // _this.network = null;
               _this.account = {};
             }
           );
         } catch (error) {
-          _this.$emit("errorLog","Please install WaykiMax at first.");
+          _this.$emit("errorLog", "Please install WaykiMax at first.");
         }
       });
       setTimeout(function() {
@@ -531,11 +534,11 @@ export default {
           ).then(
             () => {},
             error => {
-              this.$emit("errorLog",error.message);
+              this.$emit("errorLog", error.message);
             }
           );
         } catch (error) {
-          this.$emit("errorLog","Please install WaykiMax at first.");
+          this.$emit("errorLog", "Please install WaykiMax at first.");
         }
       }, 100);
     },
@@ -576,11 +579,11 @@ export default {
                   _this.contractRegId = data.data.error.message;
                 }
               } else {
-                _this.$emit("errorLog",data.message);
+                _this.$emit("errorLog", data.message);
               }
             })
             .catch(function(error) {
-              _this.$emit("errorLog",error.message);
+              _this.$emit("errorLog", error.message);
             });
         }
         setTimeout(function() {
@@ -623,31 +626,32 @@ export default {
             }
           } else {
             if (methodName === "submittx") {
-              _this.$emit("errorLog",res.error.message);
+              _this.$emit("errorLog", res.error.message);
             } else if (methodName === "getcontractregid") {
               _this.contractRegId = res.error.message;
             } else {
-              _this.$emit("errorLog",res.error.message);
+              _this.$emit("errorLog", res.error.message);
             }
           }
         })
         .catch(function(error) {
-          _this.$emit("errorLog",error.message);
+          _this.$emit("errorLog", error.message);
         });
     },
     check(error, data, from) {
       if (error === null) {
-        this.$message({
-          message: "Success!!!",
-          type: "success"
-        });
         if (from === "deploy") {
           this.txHash = data.txid;
+          this.$emit("errorLog", "Yes", this.txHash);
         } else {
+          this.$message({
+            message: " invokeTxHash Success!!!",
+            type: "success"
+          });
           this.invokeTxHash = data.txid;
         }
       } else {
-        this.$emit("errorLog",error.message);
+        this.$emit("errorLog", error.message);
         if (from === "deploy") {
           this.txHash = "";
         } else {
