@@ -18,7 +18,7 @@ deploy for master:
      - rsync -a --delete ./dist/ $WEB_DIR
      
    only:
-    - master
+    - prod
    tags:
     - hk-gw
    when: on_success
