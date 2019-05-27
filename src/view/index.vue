@@ -124,7 +124,7 @@
               :class="tabIndex==index?'active': ''"
             >{{item.name}}</p>
           </div>
-          <div style="color: #fff;padding:10px;">
+          <div>
             <v-execute :code="code" :tabIndex="tabIndex" @errorLog="errorLog"></v-execute>
           </div>
         </div>
