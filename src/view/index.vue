@@ -20,7 +20,7 @@
         axis="x"
       >
         <!--@resizestop="resizestop"-->
-        <div class="enableFocus left" style="background:#272F3E">
+        <div class="enableFocus left">
           <p class="tree">
             <i @click="ifShowTree=!ifShowTree" v-if="ifShowTree" class="el-icon-caret-bottom"></i>
             <i @click="ifShowTree=!ifShowTree" v-if="!ifShowTree" class="el-icon-caret-right"></i>
@@ -88,14 +88,15 @@
             lang="lua"
             theme="monokai"
             :autoComplete="true"
-            :style="{fontSize: fontSize + 'px', height: (contentHeight-305) + 'px',background:'#1E2431'}"
+            :style="{fontSize: fontSize + 'px', height: (contentHeight-(lineHeight+45)) + 'px',background:'#1E2431'}"
           ></editor>
         </div>
-        <div class="line3">
+        <div class="line3" :style="{height:lineHeight+'px'}"  >
+          <div class="clearLog" @click="clearLog"><img src="../assets/delete.svg" alt=""></div>
           <select class="fontSize" v-model="fontSize">
             <option v-for="item in fontSizeList" :value="item" :key="item.id">{{item}}</option>
           </select>
-          <div class="logDiv" >
+          <div class="logDiv" :style="{height:(lineHeight-30) + 'px'}" >
             <p v-for="item in errorLogs" v-bind:key="item.id">{{item.t}}: <span :style="{color:item.isSuccessLog?'green':'red'}">{{item.log}}</span> </p>
             
           </div>
@@ -164,12 +165,14 @@ export default {
   },
   data() {
     return {
+      lineHeight:200,
       fileExplorerCollapse: false,
       options: {
         /*vue2-ace-editor编辑器配置自动补全等*/
         enableBasicAutocompletion: true,
         enableSnippets: true,
-        enableLiveAutocompletion: true /*自动补全*/
+        enableLiveAutocompletion: true /*自动补全*/,
+        showPrintMargin:false,/*中间那条黑线 */
       },
       contentHeight: window.innerHeight,
       ifShowTree: true,
@@ -216,6 +219,9 @@ export default {
     }
   },
   methods: {
+    clearLog(){
+      
+    },
     errorLog(isSuccessLog,error){
       let isSL = false
       let msg = ''
