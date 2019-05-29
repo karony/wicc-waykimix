@@ -59,15 +59,12 @@
     <div class="run" v-show="tabIndex===1">
       <div class="contract">
         <div class="txHash">
-        <p>TxHash:</p>
-        <textarea v-model="txHash" id="txHash"></textarea>
-        <span class="TxHashCopy" data-clipboard-target="#txHash" @click="copy('.TxHashCopy')">
-          <img
-            style="cursor: pointer"
-            src="../assets/copy.svg"
-          >
-        </span>
-      </div>
+          <p>TxHash:</p>
+          <textarea v-model="txHash" id="txHash"></textarea>
+          <span class="TxHashCopy" data-clipboard-target="#txHash" @click="copy('.TxHashCopy')">
+            <img style="cursor: pointer" src="../assets/copy.svg">
+          </span>
+        </div>
         <div class="content">
           <P class="title">
             <span>Contract Regid:</span>
@@ -92,93 +89,103 @@
         </div>
       </div>
       <div class="parameter">
-        <div class="data">
-          <ul>
-            <li>
-              <label @click="setToggle('magicNum')" class="inner">
-                <span v-if="showConfig.magicNum"></span>
-              </label> magic number
-              <input
-                type="text"
-                :disabled="!showConfig.magicNum"
-                v-model="magicNum"
-                @input="setSave('magicNum')"
-              >&nbsp;
-            </li>
-            <li>
-              <label @click="setToggle('method')" class="inner">
-                <span v-if="showConfig.method"></span>
-              </label>
-              method
-              <input
-                type="text"
-                :disabled="!showConfig.method"
-                v-model="method"
-                @input="setSave('method')"
-              >&nbsp;
-            </li>
-            <li>
-              <label @click="setToggle('reserveBytes')" class="inner">
-                <span v-if="showConfig.reserveBytes"></span>
-              </label>
-              keep value
-              <input
-                style="width:40px;"
-                type="text"
-                :disabled="!showConfig.reserveBytes"
-                v-model="reserveBytes"
-                @input="setSave('reserveBytes')"
-              >
-            </li>
-          </ul>
-          <div class="add">
-            <div class="transfarm">
-              <span>param</span>
+        <div class="add">
+          <div class="transfarm">
+            <div>
+              <span class="title">Param</span>
+            </div>
+            <div style="box-sizing: border-box;">
               <select id="select" v-model="type">
                 <option v-for="item in options" :key="item.value" :value="item.value">{{item.label}}</option>
               </select>
-              <span class="addBottom" @click="addParam">Add</span>
+              <img class="addBottom" @click="addParam" src="../assets/add.svg">
             </div>
-            <div class="item">
-              <p v-for="(item, index) in params" :key="index">
-                <span @click="setDelete(index)" class="el-icon-close delParam"></span>
-                <span style="margin-right:5px;">param{{index+1}}</span>
-                <input
-                  :type="(item.type == 2 || item.type == 3) ? 'number' : 'text'"
-                  v-model="item.val"
-                  @input="setTransfer(item.type, index)"
-                >
-                <span style="margin-left:5px;">{{item.name}}</span>
-              </p>
+          </div>
+          <div class="item">
+            <div class="cell" v-for="(item, index) in params" :key="index">
+              <img class="delParam" @click="setDelete(index)" src="../assets/delete.svg">
+              <p class="typeStr">{{item.name}}</p>
+              <input
+                :type="(item.type == 2 || item.type == 3) ? 'number' : 'text'"
+                v-model="item.val"
+                @input="setTransfer(item.type, index)"
+              >
+              <p class="typeStr" style="width:42px;margin-left:30px;">toHex</p>
+              <p class="result">{{item.transferVal}}</p>
+            </div>
+            <div class="btnDiv">
+              <div class="save" style="background:#343E53;" @click="SaveParam">
+                <span>Save</span>
+              </div>
+              <div class="save" @click="Gen">
+                <span>Gen</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="CallCommand">
         <div class="command">
-          <p>Call command:</p>
-          <input type="text" readonly v-model="sampleCode">
-          <p class="wiccNum">
-            Wicc Amount ：
-            <input type="numbel" v-model="wiccNum">&nbsp;&nbsp;sawi
-          </p>
-          <p class="deployButton" @click="invokeContract">call</p>
+          <p>Call Contract:</p>
+          <div class="contractStr">
+            <span class="t">Param</span>
+            <label id="contractValue">{{sampleCode}}</label>
+            <span
+              data-clipboard-target="#contractValue"
+              @click="copy('.contractTagert')"
+              class="contractTagert"
+            >
+              <img style="cursor: pointer;" src="../assets/copy.svg">
+            </span>
+          </div>
+          <div class="contractStr">
+            <span class="t">Amount</span>
+            <label id="contractValue">{{wiccNum}}</label>
+            <span>sawi</span>
+          </div>
+          <div class="btnDiv">
+            <div class="save" @click="invokeContract">
+              <span>Call</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="runHash">
+      <div class="CollectionsDiv">
+        <p class="tabTitle">Collections</p>
         <div>
-          <p>
-            <span>Txhash:</span>
-            <span class="TxHashCopy">
-              <i
-                style="cursor: pointer;"
-                data-clipboard-target="#invokeTxHash"
-                @click="copy('.invokeTxHash')"
-                class="el-icon-tickets invokeTxHash"
-              ></i>
+          <div class="Collection_cell" v-for="(item,index) in savedParams" :key="index">
+            <img src="../assets/delete.svg" @click="deleteSavedParam(index)">
+            <label class="paramT">Param{{index+1}}</label>
+            <label class="paramV">{{item.param}}</label>
+            <div class="location">
+              <img src="../assets/edit.svg" @click="editSavedParam(item)">
+              <label class="call" @click="callSavedParam(item)">Call</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="CallCommand">
+        <div class="command">
+          <p>Getcontractadata</p>
+          <div class="contractStr">
+            <span class="t">Key</span>
+            <label id="contractValue"></label>
+            <span
+              style="color: #1C9AFF;cursor: pointer;"
+            >Get</span>
+          </div>
+          <div class="contractStr">
+            <span class="t">Value</span>
+            <label id="invokeTxHash">{{'invokeTxHash'}}</label>
+            <span
+              data-clipboard-target="#invokeTxHash"
+              @click="copy('.contractTagert')"
+              class="contractTagert"
+            >
+              <img style="cursor: pointer;" src="../assets/copy.svg">
             </span>
-          </p>
-          <textarea v-model="invokeTxHash" id="invokeTxHash"></textarea>
+          </div>
         </div>
       </div>
     </div>
@@ -248,36 +255,28 @@ export default {
       account: {},
       rotates: 0,
       options: [
-        { value: "1", label: "char" },
-        { value: "2", label: "4 byte number" },
-        { value: "3", label: "8 byte number" },
-        { value: "4", label: "UTF-8" },
-        { value: "5", label: "hex" }
+        { value: "1", label: "StrToHex" },
+        { value: "2", label: "IntToHex(4b)" },
+        { value: "3", label: "IntToHex(8b)" },
+        { value: "4", label: "UTF-8ToHex" },
+        { value: "5", label: "Hex" }
       ],
       txHash: "",
       contractRegId: "",
-      magicNum: localStorage.getItem("magicNum")
-        ? localStorage.getItem("magicNum")
-        : "f0",
-      method: localStorage.getItem("method")
-        ? localStorage.getItem("method")
-        : "07",
-      reserveBytes: localStorage.getItem("reserveBytes")
-        ? localStorage.getItem("reserveBytes")
-        : "0000",
+
       sampleCode: localStorage.getItem("sampleCode")
         ? localStorage.getItem("sampleCode")
-        : "f0070000",
-      showConfig: localStorage.getItem("showConfig")
-        ? JSON.parse(localStorage.getItem("showConfig"))
-        : { magicNum: true, method: true, reserveBytes: true },
+        : "",
       type: "1",
       params: localStorage.getItem("params")
         ? JSON.parse(localStorage.getItem("params"))
         : [],
       invokeTxHash: "",
       wiccNum: 0,
-      ifGetRegId: false
+      ifGetRegId: false,
+      savedParams: localStorage.getItem("savedParam")
+        ? JSON.parse(localStorage.getItem("savedParam"))
+        : []
     };
   },
   mounted() {
@@ -312,29 +311,24 @@ export default {
       let name = "";
       switch (+type) {
         case 1:
-          name = "char";
+          name = "StrToHex";
           break;
         case 2:
-          name = "4 byte number";
+          name = "IntToHex(4b)";
           break;
         case 3:
-          name = "8 byte number";
+          name = "IntToHex(8b)";
           break;
         case 4:
-          name = "UTF-8";
+          name = "UTF-8ToHex";
           break;
         case 5:
-          name = "hex";
+          name = "Hex";
       }
       return name;
     },
     setSave(type) {
       localStorage.setItem(type, this[type]);
-      this.getValue();
-    },
-    setToggle(item) {
-      this.showConfig[item] = !this.showConfig[item];
-      localStorage.setItem("showConfig", JSON.stringify(this.showConfig));
       this.getValue();
     },
     setTransfer(type, index) {
@@ -413,10 +407,32 @@ export default {
     setDelete(index) {
       this.params.splice(index, 1);
       this.getValue();
-      localStorage.setItem("sampleCode", this.sampleCode);
-      localStorage.setItem("params", JSON.stringify(this.params));
     },
     getValue() {
+      localStorage.setItem("params", JSON.stringify(this.params));
+    },
+    SaveParam() {
+      this.Gen();
+      let Obj = {
+        param: this.sampleCode,
+        params: this.params
+      };
+      this.savedParams.push(Obj);
+      localStorage.setItem("savedParam", JSON.stringify(this.savedParams));
+      this.$emit("errorLog", "Yes", "Record add successfully");
+    },
+    deleteSavedParam(index) {
+      this.savedParams.splice(index, 1);
+      localStorage.setItem("savedParam", JSON.stringify(this.savedParams));
+    },
+    editSavedParam(item) {
+      this.params = item.params;
+    },
+    callSavedParam(item) {
+      this.sampleCode = item.param;
+      this.invokeContract();
+    },
+    Gen() {
       let str = "";
       let start = "";
       for (let item in this.showConfig) {
@@ -428,23 +444,16 @@ export default {
         str += item.transferVal;
       });
       this.sampleCode = start + str;
-      localStorage.setItem("params", JSON.stringify(this.params));
-      localStorage.setItem("sampleCode", this.sampleCode);
     },
     invokeContract() {
       let _this = this;
       if (this.contractRegId === "") {
-        this.$message({
-          message: "Please entry smart contract regid ",
-          type: "warning"
-        });
+        this.$emit("errorLog", "Please entry smart contract regid");
         return false;
       }
       if (this.sampleCode === "") {
-        this.$message({
-          message: "Please entry smart contract regid ",
-          type: "warning"
-        });
+      
+        this.$emit("errorLog", "Please entry smart contract regid");
         return false;
       }
       try {
@@ -549,9 +558,8 @@ export default {
         this.login("0");
       } else {
         if (_this.txHash === "") {
-          this.$message(
-            " Please get the contract deployment transaction hash first"
-          );
+          
+          this.$emit("errorLog", "Please get the contract deployment transaction hash first")
         } else {
           if (_this.account.network === "mainnet") {
             _this.reAPI = "https://baas.wiccdev.org/v1/api/contract/regid";
@@ -566,14 +574,11 @@ export default {
                 if (data.data.result) {
                   _this.contractRegId = data.data.result.regid;
                   _this.ifGetRegId = true;
-                  _this.$message({
-                    message:
-                      "publish contract txhash:" +
+                  _this.$emit("errorLog", "Yes", "publish contract txhash:" +
                       _this.txHash +
                       ",\ncontract regid: " +
-                      _this.contractRegId,
-                    type: "success"
-                  });
+                      _this.contractRegId,);
+                  
                 } else {
                   _this.ifGetRegId = false;
                   _this.contractRegId = data.data.error.message;
@@ -591,64 +596,14 @@ export default {
         }, 1100);
       }
     },
-    getSubmittx(rawtx, methodName) {
-      let _this = this;
-      let url = `http://127.0.0.1:${_this.port}`;
-      _this.$http
-        .post(
-          url,
-          {
-            jsonrpc: "2.0",
-            id: "curltext",
-            method: methodName,
-            params: rawtx
-          },
-          {
-            auth: {
-              username: _this.user,
-              password: _this.password
-            }
-          }
-        )
-        .then(function(response) {
-          let res = response.data;
-          if (res.result) {
-            _this.$message({
-              message: "Success!!!",
-              type: "success"
-            });
-            if (methodName === "submittx") {
-              _this.txHash = res.result.hash;
-            } else if (methodName === "getcontractregid") {
-              _this.contractRegId = res.result.regid;
-            } else {
-              this.invokeTxHash = res.result.txid;
-            }
-          } else {
-            if (methodName === "submittx") {
-              _this.$emit("errorLog", res.error.message);
-            } else if (methodName === "getcontractregid") {
-              _this.contractRegId = res.error.message;
-            } else {
-              _this.$emit("errorLog", res.error.message);
-            }
-          }
-        })
-        .catch(function(error) {
-          _this.$emit("errorLog", error.message);
-        });
-    },
     check(error, data, from) {
       if (error === null) {
         if (from === "deploy") {
           this.txHash = data.txid;
           this.$emit("errorLog", "Yes", this.txHash);
         } else {
-          this.$message({
-            message: " invokeTxHash Success!!!",
-            type: "success"
-          });
           this.invokeTxHash = data.txid;
+          this.$emit("errorLog", "Yes", this.invokeTxHash);
         }
       } else {
         this.$emit("errorLog", error.message);

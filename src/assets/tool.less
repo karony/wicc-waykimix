@@ -1,57 +1,80 @@
-.tool{
-  color: rgba(255, 255, 255, 1);
-  .converter{
-    width:100%;
-    font-size: 30px;
-    text-align: center;
-    padding: 15px 0;
-  }
-  .decode{
-    width:100%;
-    font-size:16px;
-    text-align: center;
-    padding-bottom: 15px;
-  }
+.tool {
+
+    .decode {
+        color: #E2E8F0;
+        width: 100%;
+        font-size: 14px;
+        padding-bottom: 16px;
+        margin-top: 14px;
+    }
+
+    .tabDiv {
+        ul {
+            width: auto;
+            font-size: 12px;
+            margin-bottom: 16px;
+
+            li {
+                text-align: center;
+                line-height: 27px;
+                width: 97px;
+                display: inline-block;
+                background: #2B313E;
+                color: rgba(255, 255, 255, 0.3)
+            }
+
+            .active {
+                color: rgba(255, 255, 255, 1);
+                background: -webkit-linear-gradient(left, #3E5174, #344667);
+                background: -moz-linear-gradient(right, #3E5174, #344667);
+                background: linear-gradient(to right, #3E5174, #344667);
+            }
+        }
+    }
 }
-.content{
-  padding:20px;
-  cursor: pointer;
-  background-color: rgba(60, 60, 60, 1);
-  color: rgba(255, 255, 255, 1);
-  font-size:18px;
-  text-align: left;
-  border: 1px solid rgba(60, 60, 60, 1);
-  ul{
-    width:auto;
-    li{
-      display: inline-block;padding: 5px 15px;border-top: 1px solid #929292;
-      border-right:1px solid #929292;border-bottom: 1px solid #929292;
-      &:nth-of-type(1){
-        border-left:1px solid #929292;
-      }
-    }
-    .active{
-      background-color: #282828;border-bottom: 1px solid #282828;
-    }
-  }
-  .inputData{
-    background-color: #282828;
-    width: 100%;
-    height: 100px;
-    padding: 5px;
-    color: #fff;
+
+.tool1 {
+    padding: 20px;
+    border-bottom: 3px solid black;
+}
+
+.content {
+
     cursor: pointer;
-  }
+    font-size: 13px;
+    text-align: left;
+
+    textarea::-webkit-input-placeholder {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    .inputData {
+        box-sizing: border-box;
+        border-radius: 3px;
+        background-color: #181E29;
+        width: 100%;
+        height: 140px;
+        padding: 10px;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 20px;
+    }
+
+
 }
-.convert{
-  width:calc(100% - 30px);
-  margin:20px 15px;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 4px;
-  background-color: rgba(164, 158, 158, 1);
-  color: rgba(16, 16, 16, 1);
-  font-size: 20px;
-  text-align: center;
-  cursor: pointer;
+
+.convert {
+    float: right;
+    margin: 0px 0 30px;
+    width: 126px;
+    height: 27px;
+    line-height: 27px;
+    border-radius: 2px;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    background: -webkit-linear-gradient(left, #008DFF, #0062FF);
+    background: -moz-linear-gradient(right, #008DFF, #0062FF);
+    background: linear-gradient(to right, #008DFF, #0062FF);
 }

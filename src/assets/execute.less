@@ -1,351 +1,474 @@
-.page{
-  width: 100%;
-  .go{
-    transform:rotate(-360deg);
-    transition: all 1s;
-  }
-  .deploy{
+.page {
     width: 100%;
-    .environment{
-      padding:0px 20px;
-      .title{
-        margin-top: 36px;
-        margin-bottom: 16px;
-        font-size:14px;
-        color: #BBC1CB;
-        span{
-          display: inline-block;
-        }
-      }
-      ul{
-        font-size: 13px;
-        li{
-          margin-bottom: 4px;
-          background-color: #181E29;
-          line-height: 35px;
-          color: #5E6778;
-          padding:2.5px 5px;
-          display: flex;
-          justify-content: flex-start;
-          #address{
-            word-wrap: break-word;
-            overflow: hidden;
-            line-height: 20px;
-            margin-top: 8px;
-          }
-          .copyAddress{
-            margin-left:20px;
-            width: 12px;
-          }
-          .wicc{
-            margin-top:1px;font-size:12px;font-style:italic;
-            margin-left: 10px;
-          }
-          input{
-            background-color: #777;
-            color: #fff;width: 90px;
-            padding: 2px 5px;
-            border-radius:2px;
-            font-size: 13px;
-          }
-        }
-        .input{
-          font-size: 14px;
-          input{
-            width: 80px;
-          }
-        }
-        .network{
-          select{
-            background-color: #777;
-            border-radius:2px;
-            font-size: 13px;
-            padding: 2px 5px;
-            color: #fff;width: 142px;
-          }
-        }
-      }
+
+    .go {
+        transform: rotate(-360deg);
+        transition: all 1s;
     }
-    .deployButton{
-      cursor: pointer;
-      line-height: 34px;
-      font-size: 15px;
-      text-align: center;
-      color: #fff;
-      background: -webkit-linear-gradient(left, #008DFF , #0062FF);
-      background: -moz-linear-gradient(right, #008DFF , #0062FF); /* Firefox 3.6 - 15 */
-      background: linear-gradient(to right, #008DFF , #0062FF); /* 标准的语法 */
-      border-radius: 3px;
-      margin:30px 20px;
-    }
-  }
-  .run{
-    width: 100%;
-    .contract{
-      padding:0 20px;
-      border-bottom: 4px solid black;
-      .txHash{
-        position: relative;
-        p{
-          margin-top: 36px;
-          margin-bottom: 16px;
-          font-size: 14px;
-          color: #BBC1CB;
-        }
-        textarea{
-          background-color:#181E29;
-          width: calc(100% - 24px);
-          line-height: 1.5;
-          font-size: 13px;
-          letter-spacing:1px;
-          padding: 5px 10px;
-          color: #E2E8F0;
-        }
-        .TxHashCopy{
-          position: absolute;
-          left:70px;
-          top: -2px;
-          height: 13px;
-        }
-      }
-      .content{
-        padding: 20px 0 30px;
-        .title{
-          color: #BBC1CB;
-          font-size: 14px;
-          span{
-            display: inline-block;
-          }
-        }
-        .regid{
-          position: relative;
-          input{
-            box-sizing: border-box;
-            margin-top: 16px;
-            display: inline-block;
-            width: 100%;
-            padding:5px 30px 5px 10px;
-            background-color: #181E29;
-            line-height: 24px;
-            
-            
-          }
-          span{
-            display:inline-block;vertical-align: middle;
-            position: absolute;
-            top:24px;
-            right: 10px;
-            height: 13px;
-          }
-          
-        }
-      }
-      
-    }
-    .parameter{
-      position: relative;
-      margin-top: 4px;
-      padding: 10px 20px;
-      color: #BBC1CB;
-      .data{
-        ul{
-          li{
-            font-size: 12px;
-            height: 30px;
-            display: inline-block;
-            .inner {
-              vertical-align: middle;
-              width: 15px;
-              height: 15px;
-              display: inline-block;
-              border-radius: 50%;
-              margin-bottom: 0;
-              cursor: pointer;
-              position: relative;
-              span{
-                width: 7px;
-                height:7px;
-                position: absolute;
-                left:4px;
-                top:4px;
-                background-color: #fff;
-                display: inline-block;
-                border-radius: 50%;
-                margin-bottom: 0;
-              }
-            }
-            input{
-              width:30px;
-              border-radius: 2px;
-              padding: 0 2px;
-              color: #333;
-              cursor: pointer;
-            }
-          }
-        }
-        .add{
-    
-          background-color: #3C3C3C;color: #fff;padding: 10px 15px;
-          #select{
-            background-color:#0B0A0A;font-size:13px;border-radius: 5px;
-            padding:3px 5px;margin-left: 10px;color: #777;
-          }
-          .addBottom{
-            display: inline-block;
-            color: #333;padding: 3px 10px;
-            border-radius: 5px;margin-left: 15px;
-            background-color: #A49E9E;
-            cursor: pointer;
-          }
-          .item{
-            width: 100%;
-            max-height: 160px;
-            overflow-y: auto;
-            p{
-              margin-top: 10px;
-              input{
-                height: 20px;color: #333;
-                font-size: 13px;
-                padding: 0 5px;
-                line-height: 20px;
-                border-radius: 5px;
-                width:calc(100% - 200px);
-                cursor: pointer;
-              }
-              span{
-                display: inline-block;
+
+    .deploy {
+        width: 100%;
+
+        .environment {
+            padding: 0px 20px;
+
+            .title {
+                margin-top: 36px;
+                margin-bottom: 16px;
                 font-size: 14px;
-              }
-              .delParam{
-                width:16px;height:16px;border-radius: 50%;border: 1px solid #fff;cursor: pointer;
-              }
+                color: #BBC1CB;
+
+                span {
+                    display: inline-block;
+                }
             }
-          }
+
+            ul {
+                font-size: 13px;
+
+                li {
+                    margin-bottom: 4px;
+                    background-color: #181E29;
+                    line-height: 35px;
+                    color: #5E6778;
+                    padding: 2.5px 5px;
+                    display: flex;
+                    justify-content: flex-start;
+
+                    #address {
+                        word-wrap: break-word;
+                        overflow: hidden;
+                        line-height: 20px;
+                        margin-top: 8px;
+                    }
+
+                    .copyAddress {
+                        margin-left: 20px;
+                        width: 12px;
+                    }
+
+                    .wicc {
+                        margin-top: 1px;
+                        font-size: 12px;
+                        font-style: italic;
+                        margin-left: 10px;
+                    }
+
+                    input {
+                        background-color: #777;
+                        color: #fff;
+                        width: 90px;
+                        padding: 2px 5px;
+                        border-radius: 2px;
+                        font-size: 13px;
+                    }
+                }
+
+                .input {
+                    font-size: 14px;
+
+                    input {
+                        width: 80px;
+                    }
+                }
+
+                .network {
+                    select {
+                        background-color: #777;
+                        border-radius: 2px;
+                        font-size: 13px;
+                        padding: 2px 5px;
+                        color: #fff;
+                        width: 142px;
+                    }
+                }
+            }
         }
-        p{
-          font-size:16px;
-        }
-      }
-    }
-    .CallCommand{
-      position: relative;
-      border-radius: 3px;margin-top: 10px;
-      background-color: #3C3C3C;
-      padding: 10px 15px;
-      .command{
-        padding: 10px 15px;
-        border: 1px solid #929292;
-        background-color:#282828;
-        p{
-          font-size:16px;
-        }
-        input{
-          background-color: #fff;
-          width: calc(100% - 10px);
-          height: auto;
-          border-radius: 5px;
-          margin-top: 10px;
-          line-height: 20px;
-          font-size: 13px;
-          letter-spacing:1px;
-          color: #333;
-          cursor: pointer;
-          padding: 2px 5px;
-        }
-        .deployButton{
-          height: 30px;
-          cursor: pointer;
-          line-height: 30px;
-          text-align: center;
-          color: #fff;
-          background-color: #3C3C3C;
-          border-radius: 5px;
-          margin:15px 0 0 0;
-          border: 1px solid #929292;
-        }
-        .wiccNum{
-          width: 100%;height: 30px;
-          margin-top:5px;
-          padding-top: 10px;
-          input{
-            width: calc(100% - 170px);
-            margin-top: 0;
+
+        .deployButton {
+            cursor: pointer;
+            line-height: 34px;
+            font-size: 15px;
+            text-align: center;
             color: #fff;
-            border: 1px solid #929292;
-            background-color: #3C3C3C;
-          }
+            background: -webkit-linear-gradient(left, #008DFF, #0062FF);
+            background: -moz-linear-gradient(right, #008DFF, #0062FF);
+            /* Firefox 3.6 - 15 */
+            background: linear-gradient(to right, #008DFF, #0062FF);
+            /* 标准的语法 */
+            border-radius: 3px;
+            margin: 30px 20px;
         }
+    }
+
+    .run {
+        width: 100%;
+
+        .contract {
+            padding: 0 20px;
+            border-bottom: 3px solid black;
+
+            .txHash {
+                position: relative;
+
+                p {
+                    margin-top: 36px;
+                    margin-bottom: 16px;
+                    font-size: 14px;
+                    color: #E2E8F0;
+                }
+
+                textarea {
+                    box-sizing: border-box;
+                    background-color: #181E29;
+                    width: 100%;
+                    line-height: 1.5;
+                    font-size: 13px;
+                    letter-spacing: 1px;
+                    padding: 5px 10px;
+                    color: #E2E8F0;
+                }
+
+                .TxHashCopy {
+                    position: absolute;
+                    left: 70px;
+                    top: -2px;
+                    height: 13px;
+                }
+            }
+
+            .content {
+                padding: 20px 0 30px;
+
+                .title {
+                    color: #E2E8F0;
+                    font-size: 14px;
+
+                    span {
+                        display: inline-block;
+                    }
+                }
+
+                .regid {
+                    position: relative;
+
+                    input {
+                        box-sizing: border-box;
+                        margin-top: 16px;
+                        display: inline-block;
+                        width: 100%;
+                        padding: 5px 30px 5px 10px;
+                        background-color: #181E29;
+                        line-height: 24px;
+
+
+                    }
+
+                    span {
+                        display: inline-block;
+                        vertical-align: middle;
+                        position: absolute;
+                        top: 24px;
+                        right: 10px;
+                        height: 13px;
+                    }
+
+                }
+            }
+
+        }
+
+        .parameter {
+            position: relative;
+            margin-top: 4px;
+            padding: 20px 20px;
+            color: #E2E8F0;
+            font-size: 14px;
+            border-bottom: 3px solid black;
+
+            .add {
+                .transfarm {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+
+                    .title {
+                        line-height: 29px;
+                    }
+
+                    #select {
+                        background: #343E53;
+                        font-size: 13px;
+                        color: #E2E8F0;
+                        line-height: 29px;
+                        width: 150px;
+                        border-radius: 2px;
+                    }
+
+                    .addBottom {
+                        height: 29px;
+                        margin-left: 15px;
+                        margin-top: 5px;
+                        cursor: pointer;
+                    }
+                }
+
+                .item {
+                    width: 100%;
+                    overflow-y: auto;
+                    font-size: 13px;
+
+                    .cell {
+                        display: flex;
+                        justify-content: flex-start;
+                        margin-bottom: 2px;
+                        background: #181E29;
+                        border-radius: 3px;
+                        padding: 5px;
+
+                        input {
+                            box-sizing: border-box;
+                            background: rgba(60, 71, 93, 0.308);
+                            color: #E2E8F0;
+                            padding: 0 5px;
+                            line-height: 24px;
+                            height: 24px;
+                            border-radius: 2px;
+                            width: 100px;
+                            cursor: pointer;
+
+                        }
+
+                        .delParam {
+                            margin-top: 3px;
+                            height: 17px;
+                            cursor: pointer;
+                        }
+
+                        .typeStr {
+                            margin: 0px 5px;
+                            color: #6E798E;
+                            line-height: 24px;
+                            overflow: hidden;
+                            width: 92px;
+                            text-align: right;
+
+                        }
+
+                        .result {
+                            box-sizing: border-box;
+                            border-radius: 2px;
+                            margin-right: 5px;
+                            padding: 0 5px;
+                            background: rgba(60, 71, 93, 0.308);
+                            color: #E2E8F0;
+                            line-height: 24px;
+                            width: calc(100% - 300px);
+                            min-width: 150px;
+                            overflow: hidden;
+                            word-wrap: break-word;
+
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        .btnDiv {
+            height: 40px;
+            padding: 11.5px 0 0;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: flex-end;
+
+            .save {
+                cursor: pointer;
+                font-size: 14px;
+                line-height: 27px;
+                width: 102px;
+                text-align: center;
+                background: -webkit-linear-gradient(left, #008DFF, #0062FF);
+                background: -moz-linear-gradient(right, #008DFF, #0062FF);
+                background: linear-gradient(to right, #008DFF, #0062FF);
+                margin-left: 8px;
+                border-radius: 2px;
+            }
+        }
+
+        .CallCommand {
+            position: relative;
+            border-radius: 3px;
+            margin-top: 10px;
+            color: #E2E8F0;
+            padding: 20px 20px;
+            border-bottom: 3px solid black;
+
+            .command {
+                p {
+                    font-size: 14px;
+                }
+
+                .contractStr {
+                    font-size: 13px;
+                    position: relative;
+
+                    #contractValue {
+                        box-sizing: border-box;
+                        margin-top: 16px;
+                        display: inline-block;
+                        width: 100%;
+                        padding: 5px 30px 5px 60px;
+                        background-color: #181E29;
+                        line-height: 24px;
+                        min-height: 30px;
+                        color: #E2E8F0;
+                        overflow: hidden;
+                        word-wrap: break-word;
+                    }
+
+                    span {
+                        display: inline-block;
+                        vertical-align: middle;
+                        position: absolute;
+                        top: 25px;
+                        right: 10px;
+                        height: 13px;
+                    }
+
+                    .t {
+                        left: 5px;
+                        color: #6E798E;
+                    }
+
+                }
+            }
+        }
+
+        .CollectionsDiv {
+            color: #6E798E;
+            font-size: 13px;
+            padding: 20px;
+            border-bottom: 3px solid black;
+            .tabTitle {
+                color: #E2E8F0;
+                font-size: 14px;
+                line-height: 20px;
+                margin-top: 6px;
+                margin-bottom: 16px;
+            }
+
+            .Collection_cell {
+                
+                display: flex;
+                justify-content: flex-start;
+                margin-bottom: 2px;
+                background: #181E29;
+                border-radius: 3px;
+                padding: 6px;
+                
+                .paramT{
+                  background: #1F2633;
+                  width: 80px;
+                  padding-left: 10px;
+                  line-height: 22px;
+                  height: 22px;
+                  margin: 0 10px ;
+                }
+                .paramV{
+                  line-height: 22px;
+                  margin-right: 10px;
+                  overflow: hidden;
+                  word-wrap: break-word;
+                  margin-right: 70px;
+                }
+                img{
+                  width: 16px;
+                  margin-top: 3px;
+                  height: 16px;
+                  cursor: pointer;
+                }
+                .location{
+                  position: absolute;
+                  right: 14px;
+                  .call{
+                    line-height: 22px;
+                    color: #1C9AFF;
+                    cursor: pointer;
+                    margin: 0 16px;
+                  }
+                  img{
+                    margin-top: -1px;
+                    width: 14px;
+                  }
+                }
+                
+
+            }
+
+        }
+        #invokeTxHash {
+          box-sizing: border-box;
+          margin-top: 16px;
+          display: inline-block;
+          width: 100%;
+          padding: 5px 30px 5px 60px;
+          background-color: #181E29;
+          line-height: 24px;
+          min-height: 30px;
+          color: #E2E8F0;
+          overflow: hidden;
+          word-wrap: break-word;
       }
     }
-    .runHash{
-      position: relative;
-      border-radius: 3px;margin-top: 10px;
-      background-color: #3C3C3C;
-      padding: 10px 15px;
-      div{
-        padding: 10px 15px;
-        border: 1px solid #929292;
-        background-color:#282828;
-        p{
-          font-size:16px;
-        }
-        textarea{
-          background-color: #3C3C3C;
-          border: 1px solid #929292;
-          padding: 2px 5px;
-          width: calc(100% - 10px);
-          height: 50px;
-          border-radius: 5px;
-          margin-top: 10px;
-          line-height: 20px;
-          font-size:13px;
-          letter-spacing:1px;
-          cursor: pointer;
-          color: #fff;
-        }
-      }
-    }
-  }
-  .debug{
-    height: 200px;
-    line-height: 200px;
-    background-color: rgba(60, 60, 60, 1);
-    color: rgba(255, 255, 255, 1);
-    font-size: 20px;
-    text-align: center;
-    border: 1px solid rgba(60, 60, 60, 1);
-  }
-  .help{
-    height: 200px;
-    padding: 10px;
-    background-color: rgba(60, 60, 60, 1);
-    color: rgba(255, 255, 255, 1);
-    font-size: 20px;
-    text-align: center;
-    border: 1px solid rgba(60, 60, 60, 1);
-    .contact{
-      width: 100%;
-      height: 54px;
-      color: rgba(255, 255, 255, 1);
-      font-size: 33px;
-      text-align: left;
-    }
-    .mailbox{
-      width: 100%;
-      text-align: left;
-      label{
+
+    .debug {
+        height: 200px;
+        line-height: 200px;
+        background-color: rgba(60, 60, 60, 1);
+        color: rgba(255, 255, 255, 1);
         font-size: 20px;
-      }
-      p{
-        font-size: 16px;
-        margin: 8px 0 15px 0;
-        line-height:25px;
-        padding-left:40px;
-        a{
-          text-decoration: underline;
-        }
-      }
+        text-align: center;
+        border: 1px solid rgba(60, 60, 60, 1);
     }
-  }
+
+    .help {
+        height: 200px;
+        padding: 10px;
+        background-color: rgba(60, 60, 60, 1);
+        color: rgba(255, 255, 255, 1);
+        font-size: 20px;
+        text-align: center;
+        border: 1px solid rgba(60, 60, 60, 1);
+
+        .contact {
+            width: 100%;
+            height: 54px;
+            color: rgba(255, 255, 255, 1);
+            font-size: 33px;
+            text-align: left;
+        }
+
+        .mailbox {
+            width: 100%;
+            text-align: left;
+
+            label {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 16px;
+                margin: 8px 0 15px 0;
+                line-height: 25px;
+                padding-left: 40px;
+
+                a {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
 
 }
