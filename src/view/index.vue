@@ -16,11 +16,11 @@
         drag-cancel=".enableFocus"
         :style="{ height: contentHeight + 'px'}"
         class="fileExplorerContainer"
-        style="margin-right:6px;position: relative;"
+        style="margin-right:2px;position: relative;"
         axis="x"
       >
         <!--@resizestop="resizestop"-->
-        <div class="enableFocus left">
+        <div class="enableFocus left" style="background:#272F3E">
           <p class="tree">
             <i @click="ifShowTree=!ifShowTree" v-if="ifShowTree" class="el-icon-caret-bottom"></i>
             <i @click="ifShowTree=!ifShowTree" v-if="!ifShowTree" class="el-icon-caret-right"></i>
@@ -88,7 +88,7 @@
             lang="lua"
             theme="monokai"
             :autoComplete="true"
-            :style="{fontSize: fontSize + 'px', height: (contentHeight-305) + 'px'}"
+            :style="{fontSize: fontSize + 'px', height: (contentHeight-305) + 'px',background:'#1E2431'}"
           ></editor>
         </div>
         <div class="line3">
@@ -96,7 +96,7 @@
             <option v-for="item in fontSizeList" :value="item" :key="item.id">{{item}}</option>
           </select>
           <div class="logDiv" >
-            <p v-for="item in errorLogs" v-bind:key="item.id">{{item.t}}: <span style="color:red">{{item.log}}</span> </p>
+            <p v-for="item in errorLogs" v-bind:key="item.id">{{item.t}}: <span :style="{color:item.isSuccessLog?'green':'red'}">{{item.log}}</span> </p>
             
           </div>
         </div>
@@ -113,7 +113,7 @@
         class="tabContainer"
         drag-cancel=".enableFocus"
         axis="x"
-        style="left:10px; margin-right:16px;position: relative;"
+        style="left:2px; margin-right:2px;position: relative;"
       >
         <div class="enableFocus right">
           <div class="button">
@@ -124,7 +124,7 @@
               :class="tabIndex==index?'active': ''"
             >{{item.name}}</p>
           </div>
-          <div style="color: #fff;padding:10px;">
+          <div>
             <v-execute :code="code" :tabIndex="tabIndex" @errorLog="errorLog"></v-execute>
           </div>
         </div>
@@ -216,11 +216,20 @@ export default {
     }
   },
   methods: {
-    errorLog(error){
+    errorLog(isSuccessLog,error){
+      let isSL = false
+      let msg = ''
+      if (isSuccessLog == 'Yes'){
+        isSL = true
+        msg = error
+      }else{
+        msg = isSuccessLog
+      }
       let time = new Date();
       let errorLog = {
         t:time,
-        log:error,
+        log:msg,
+        isSuccessLog:isSL
       }
       this.errorLogs.push(errorLog)
       localStorage.setItem('logInfo',JSON.stringify(this.errorLogs))
@@ -408,3 +417,9 @@ export default {
 };
 </script>
 <style scoped src="../assets/index.less" lang='less'></style>
+<style>
+.ace-monokai .ace_gutter{
+  background: #1E2431 !important;
+}
+</style>
+
