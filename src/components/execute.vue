@@ -167,17 +167,21 @@
 
       <div class="CallCommand">
         <div class="command">
-          <p>Getcontractadata</p>
+          <div class="GetContractHeader">
+            <p>Getcontractadata</p>
+            <select id="select" v-model="returnType">
+              <option v-for="(item,index) in returnTypes" :key="index" :value="item">{{item}}</option>
+            </select>
+          </div>
+
           <div class="contractStr">
             <span class="t">Key</span>
-            <label id="contractValue"></label>
-            <span
-              style="color: #1C9AFF;cursor: pointer;"
-            >Get</span>
+            <input id="contractValue" v-model="GetcontractadataKey">
+            <span style="color: #1C9AFF;cursor: pointer;" @click="GetDataOnline">Get</span>
           </div>
           <div class="contractStr">
             <span class="t">Value</span>
-            <label id="invokeTxHash">{{'invokeTxHash'}}</label>
+            <label id="invokeTxHash">{{returnType}}</label>
             <span
               data-clipboard-target="#invokeTxHash"
               @click="copy('.contractTagert')"
@@ -241,6 +245,9 @@ export default {
   },
   data() {
     return {
+      GetcontractadataKey:"",
+      returnType: "STRING",
+      returnTypes: ["STRING", "NUMBER", "HEX"],
       ifShowN: false,
       port: localStorage.getItem("port")
         ? localStorage.getItem("port")
@@ -445,6 +452,23 @@ export default {
       });
       this.sampleCode = start + str;
     },
+    GetDataOnline(){
+      if (this.contractRegId === "") {
+        this.$emit("errorLog", "Please entry smart contract regid");
+        return false;
+      }
+      let url = "https://baas.wiccdev.org/v2/api/contract/getcontractdata";
+      let para = {
+          "key": this.GetcontractadataKey,
+          "regid": this.contractRegId,
+          "returndatatype": this.returnType
+      };
+      this.$http.post(url, para).then(res => {
+        this.$emit("errorLog",'Yes', res.data);
+      }).catch(err=>{
+        this.$emit("errorLog", error);
+      })
+    },
     invokeContract() {
       let _this = this;
       if (this.contractRegId === "") {
@@ -452,7 +476,6 @@ export default {
         return false;
       }
       if (this.sampleCode === "") {
-      
         this.$emit("errorLog", "Please entry smart contract regid");
         return false;
       }
@@ -558,8 +581,10 @@ export default {
         this.login("0");
       } else {
         if (_this.txHash === "") {
-          
-          this.$emit("errorLog", "Please get the contract deployment transaction hash first")
+          this.$emit(
+            "errorLog",
+            "Please get the contract deployment transaction hash first"
+          );
         } else {
           if (_this.account.network === "mainnet") {
             _this.reAPI = "https://baas.wiccdev.org/v1/api/contract/regid";
@@ -574,11 +599,14 @@ export default {
                 if (data.data.result) {
                   _this.contractRegId = data.data.result.regid;
                   _this.ifGetRegId = true;
-                  _this.$emit("errorLog", "Yes", "publish contract txhash:" +
+                  _this.$emit(
+                    "errorLog",
+                    "Yes",
+                    "publish contract txhash:" +
                       _this.txHash +
                       ",\ncontract regid: " +
-                      _this.contractRegId,);
-                  
+                      _this.contractRegId
+                  );
                 } else {
                   _this.ifGetRegId = false;
                   _this.contractRegId = data.data.error.message;
