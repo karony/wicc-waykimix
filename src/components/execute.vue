@@ -45,7 +45,7 @@
           </li>
           <li>
             <p>Balance：</p>
-            <p id="address">{{account.balance ? account.balance : 0}}</p>
+            <p id="address">{{balance ? balance : 0}}</p>
             <p class="wicc">WICC</p>
           </li>
         </ul>
@@ -245,7 +245,8 @@ export default {
   },
   data() {
     return {
-      GetcontractadataKey:"",
+      balance:0,//余额
+      GetcontractadataKey: "",
       returnType: "STRING",
       returnTypes: ["STRING", "NUMBER", "HEX"],
       ifShowN: false,
@@ -452,22 +453,30 @@ export default {
       });
       this.sampleCode = start + str;
     },
-    GetDataOnline(){
+    GetDataOnline() {
       if (this.contractRegId === "") {
         this.$emit("errorLog", "Please entry smart contract regid");
         return false;
       }
-      let url = "https://baas.wiccdev.org/v2/api/contract/getcontractdata";
+      let url = "";
+      if (this.account.network === "mainnet") {
+        url = "https://baas.wiccdev.org/v2/api/contract/getcontractdata";
+      } else {
+        url = "https://baas-test.wiccdev.org/v2/api/contract/getcontractdata";
+      }
       let para = {
-          "key": this.GetcontractadataKey,
-          "regid": this.contractRegId,
-          "returndatatype": this.returnType
+        key: this.GetcontractadataKey,
+        regid: this.contractRegId,
+        returndatatype: this.returnType
       };
-      this.$http.post(url, para).then(res => {
-        this.$emit("errorLog",'Yes', res.data);
-      }).catch(err=>{
-        this.$emit("errorLog", error);
-      })
+      this.$http
+        .post(url, para)
+        .then(res => {
+          this.$emit("errorLog", "Yes", res.data);
+        })
+        .catch(err => {
+          this.$emit("errorLog", error);
+        });
     },
     invokeContract() {
       let _this = this;
@@ -519,6 +528,7 @@ export default {
             data => {
               //_this.network = data.network;
               _this.account = data;
+              _this.getAcountBalance();
             },
             error => {
               _this.$emit("errorLog", error.message);
@@ -641,6 +651,27 @@ export default {
           this.invokeTxHash = "";
         }
       }
+    },
+    getAcountBalance() {
+      let url = "";
+      if (this.account.network === "mainnet") {
+        url = "https://baas.wiccdev.org/v2/api/account/getaccountinfo";
+      } else {
+        url = "https://baas-test.wiccdev.org/v2/api/account/getaccountinfo";
+      }
+      let para = {
+        address: this.account.address
+      };
+      this.$http
+        .post(url, para)
+        .then(res => {
+          if (res.data.code == 0) {
+            this.balance = parseInt(res.data.data.balance) / 100000000;
+          }
+        })
+        .catch(err => {
+          this.$emit("errorLog", error);
+        });
     }
   }
 };

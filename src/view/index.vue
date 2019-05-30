@@ -220,7 +220,8 @@ export default {
   },
   methods: {
     clearLog(){
-      
+      localStorage.removeItem('logInfo')
+      this.errorLogs = []
     },
     errorLog(isSuccessLog,error){
       let isSL = false
