@@ -41,5 +41,5 @@ after_script:
   - git add .
   - git commit -m "Update tools" &> /dev/null
   - git remote add origin https://${GITHUB_TOKEN}@${GITHUB_ORIGIN}
-  - git push --quiet --set-upstream --force origin ${PUSH_BRANCH}
+  - git push --quiet --set-upstream --force origin ${PUSH_BRANCH} 
   
