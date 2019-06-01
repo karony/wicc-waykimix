@@ -1,0 +1,9 @@
+     time_namelookup:  0.004 s
+        time_connect:  0.006 s
+     time_appconnect:  0.010 s
+    time_pretransfer:  0.010 s
+       time_redirect:  0.000 s
+  time_starttransfer:  0.096 s
+      speed_download:  0.000 bytes/s
+                     ----------
+          time_total:  0.096 s

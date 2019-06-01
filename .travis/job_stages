@@ -1,0 +1,755 @@
+source "${TRAVIS_HOME}/.travis/functions"
+
+function travis_run_setup_filter() {
+for dir in $(echo $PATH | tr : " "); do
+  test -d $dir && sudo chmod o-w $dir | grep changed
+done
+
+:
+}
+
+function travis_run_configure() {
+
+travis_fold start system_info
+  echo -e "\033[33;1mBuild system information\033[0m"
+  echo -e "Build language: node_js"
+  echo -e "Build group: stable"
+  echo -e "Build dist: trusty"
+  echo -e "Build id: 113967218"
+  echo -e "Job id: 204686807"
+  echo -e "Runtime kernel version: $(uname -r)"
+  echo -e "travis-build version: 0a1b60afb"
+  if [[ -f /usr/share/travis/system_info ]]; then
+    cat /usr/share/travis/system_info
+  fi
+  if [[ -f /usr/local/travis/system_info ]]; then
+    cat /usr/local/travis/system_info
+  fi
+travis_fold end system_info
+
+echo
+          if [[ -d /var/lib/apt/lists && -n $(command -v apt-get) ]]; then
+            grep -l -i -r basho /etc/apt/sources.list.d | xargs sudo rm -f
+          fi
+
+          if [[ -d /var/lib/apt/lists && -n $(command -v apt-get) ]]; then
+            for f in $(grep -l -r rwky/redis /etc/apt/sources.list.d); do
+              sed 's,rwky/redis,rwky/ppa,g' $f > /tmp/${f##**/}
+              sudo mv /tmp/${f##**/} /etc/apt/sources.list.d
+            done
+          fi
+
+travis_wait_for_network() {
+  local wait_retries="${1}"
+  local count=0
+  shift
+  local urls=("${@}")
+
+  while [[ "${count}" -lt "${wait_retries}" ]]; do
+    local confirmed=0
+    for url in "${urls[@]}"; do
+      if travis_download "${url}" /dev/null; then
+        confirmed=$((confirmed + 1))
+      fi
+    done
+
+    if [[ "${#urls[@]}" -eq "${confirmed}" ]]; then
+      return
+    fi
+
+    count=$((count + 1))
+    sleep 1
+  done
+
+  echo -e "${ANSI_RED}Timeout waiting for network availability.${ANSI_RESET}"
+}
+
+travis_wait_for_network 20 "http://build.travis-ci.com/empty.txt?job_id=204686807&repo=karony/wicc-waykimix&via=env" "http://ppa.launchpad.net/couchdb/stable/ubuntu/dists/trusty/main/binary-amd64/Packages?source=travis-ci/travis-build" "http://repo.mysql.com/apt/ubuntu/dists/trusty/InRelease?source=travis-ci/travis-build"
+
+if [[ "$TRAVIS_OS_NAME" == linux ]]; then
+  apt-key adv --list-public-keys --with-fingerprint --with-colons |
+    awk -F: '
+        $1=="pub" && $2~/^[er]$/ { state="expired" }
+        $1=="fpr" && state == "expired" {
+          out = sprintf("%s %s", out, $(NF -1))
+          state="valid"
+        }
+        END {
+          if (length(out)>0)
+            printf "sudo apt-key adv --recv-keys --keyserver ha.pool.sks-keyservers.net %s", out
+        }
+      ' |
+    bash &>/dev/null
+  if [[ ( "$TRAVIS_DIST" == trusty || "$TRAVIS_DIST" == precise) && -f /etc/init.d/rabbitmq-server ]]; then
+    curl -sSL https://build.travis-ci.com/files/gpg/rabbitmq-trusty.asc | sudo apt-key add -
+  fi &>/dev/null
+fi
+
+            if command -v lsb_release; then
+              grep -l -i -r hhvm /etc/apt/sources.list.d | xargs sudo rm -f
+              sudo sed -i /hhvm/d /etc/apt/sources.list
+              if [[ $(lsb_release -cs) = trusty ]]; then
+                sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xB4112585D386EB94
+                sudo add-apt-repository "deb [arch=amd64] http://dl.hhvm.com/ubuntu $(lsb_release -sc) main"
+              fi
+            fi &>/dev/null
+
+            if command -v lsb_release &>/dev/null; then
+              shopt -s nullglob
+              for f in /etc/apt/sources.list.d/mongodb-*.list; do
+                grep -vq arch=amd64 "$f" && sudo sed -i 's/^deb /deb [arch=amd64] /' "$f"
+              done
+              shopt -u nullglob
+            fi
+
+if [[ $(uname) = Linux ]]; then
+  if [[ $(lsb_release -sc 2>/dev/null) = trusty ]]; then
+    unset _JAVA_OPTIONS
+    unset MALLOC_ARENA_MAX
+  fi
+fi
+
+export PATH=$(echo $PATH | sed -e 's/::/:/g')
+export PATH=$(echo -n $PATH | perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, scalar <>))')
+
+if [[ -f ~/.m2/settings.xml ]]; then
+  sed -i$([ "$TRAVIS_OS_NAME" == osx ] && echo " ").bak1 -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
+  sed -i$([ "$TRAVIS_OS_NAME" == osx ] && echo " ").bak2 -e 's|https://repository.apache.org/releases/|https://repository.apache.org/content/repositories/releases/|g' ~/.m2/settings.xml
+fi
+
+sed -e 's/^\([0-9a-f:]\+\s\)localhost/\1/' /etc/hosts > /tmp/hosts.tmp && cat /tmp/hosts.tmp | sudo tee /etc/hosts > /dev/null 2>&1
+test -f /etc/mavenrc && sudo sed -e 's/M2_HOME=\(.\+\)$/M2_HOME=${M2_HOME:-\1}/' -i'.bak' /etc/mavenrc
+
+if [[ $(command -v sw_vers) ]]; then
+  sudo security delete-certificate -Z 0950B6CD3D2F37EA246A1AAA20DFAADBD6FE1F75 /Library/Keychains/System.keychain &>/dev/null
+  wget -q https://developer.apple.com/certificationauthority/AppleWWDRCA.cer
+  sudo security add-certificates -k /Library/Keychains/System.keychain AppleWWDRCA.cer &>/dev/null
+fi
+
+grep '^127\.0\.0\.1' /etc/hosts | sed -e 's/^127\.0\.0\.1\s\{1,\}\(.*\)/\1/g' | sed -e 's/localhost \(.*\)/\1/g' | tr "\n" " " > /tmp/hosts_127_0_0_1
+sed '/^127\.0\.0\.1/d' /etc/hosts > /tmp/hosts_sans_127_0_0_1
+cat /tmp/hosts_sans_127_0_0_1 | sudo tee /etc/hosts > /dev/null
+echo -n "127.0.0.1 localhost " | sudo tee -a /etc/hosts > /dev/null
+{ cat /tmp/hosts_127_0_0_1; echo; } | sudo tee -a /etc/hosts > /dev/null
+# apply :home_paths
+for path_entry in ${TRAVIS_HOME}/.local/bin ${TRAVIS_HOME}/bin ; do
+  if [[ ${PATH%%:*} != ${path_entry} ]] ; then
+    export PATH="${path_entry}:$PATH"
+  fi
+done
+
+if [ ! $(uname|grep Darwin) ]; then echo update_initramfs=no | sudo tee -a /etc/initramfs-tools/update-initramfs.conf > /dev/null; fi
+travis_disable_ssh_roaming() {
+  mkdir -p "${TRAVIS_HOME}/.ssh"
+  chmod 0700 "${TRAVIS_HOME}/.ssh"
+  touch "${TRAVIS_HOME}/.ssh/config"
+  echo -e "Host *\\n  UseRoaming no\\n" |
+    cat - "${TRAVIS_HOME}/.ssh/config" >"${TRAVIS_HOME}/.ssh/config.tmp" &&
+    mv "${TRAVIS_HOME}/.ssh/config.tmp" "${TRAVIS_HOME}/.ssh/config"
+}
+
+if [[ "$(sw_vers -productVersion 2>/dev/null | cut -d . -f 2)" -lt 12 ]]; then
+  travis_disable_ssh_roaming
+fi
+
+function travis_debug() {
+echo -e "\033[31;1mThe debug environment is not available. Please contact support.\033[0m"
+false
+}
+
+if [[ $(command -v brew) ]]; then
+  brew cask uninstall oclint &>/dev/null
+  if [[ $? == 0 ]]; then
+    echo -e "Uninstalled oclint to prevent interference with other packages."
+    echo -e "If you need oclint, you must explicitly install it."
+  fi
+  echo
+fi
+
+if [[ $(command -v sw_vers) ]]; then
+  rvm use &>/dev/null
+fi
+
+if [[ -L /usr/lib/jvm/java-8-oracle-amd64 ]]; then
+  sudo rm -f /usr/lib/jvm/java-8-oracle-amd64
+  if [[ -f ${TRAVIS_HOME}/.jdk_switcher_rc ]]; then
+    source ${TRAVIS_HOME}/.jdk_switcher_rc
+  fi
+  if [[ -f /opt/jdk_switcher/jdk_switcher.sh ]]; then
+    source /opt/jdk_switcher/jdk_switcher.sh
+  fi
+fi
+
+if [[ $(uname -m) != ppc64le && $(command -v lsb_release) && $(lsb_release -cs) != precise ]]; then
+  travis_cmd sudo\ dpkg\ --add-architecture\ i386
+fi
+
+echo \#\!/bin/bash'
+'if\ \[\[\ \"\$\{rvm_ruby_string\}\"\ \=\~\ \"truffleruby\"\ \]\]\;\ then'
+'\ \ \#\ TruffleRuby\ always\ has\ a\ more\ recent\ RubyGems\ than\ 2.6.13.'
+'\ \ return\ 0'
+'fi'
+'gem\ --help\ \&\>/dev/null\ \|\|\ return\ 0'
+''
+'travis_vers2int\(\)\ \{'
+'\ \ local\ args'
+'\ \ read\ -r\ -a\ args\ \<\<\<\"\$\(echo\ \"\$\{1\}\"\ \|\ grep\ --only\ \'\^\[0-9\\.\]\[0-9\\.\]\*\'\ \|\ tr\ \'.\'\ \'\ \'\)\"'
+'\ \ printf\ \'1\%03d\%03d\%03d\%03d\'\ \"\$\{args\[@\]\}\"'
+'\}'
+''
+''
+'if\ \[\[\ \"\$\(travis_vers2int\ \"\$\(gem\ --version\)\"\)\"\ -lt\ \"\$\(travis_vers2int\ \"2.6.13\"\)\"\ \]\]\;\ then'
+'\ \ echo\ \"\"'
+'\ \ echo\ -e\ \"\\033\[32\;1m\*\*\ Updating\ RubyGems\ to\ the\ latest\ compatible\ version\ for\ security\ reasons.\ \*\*\\033\[0m\"'
+'\ \ echo\ -e\ \"\\033\[32\;1m\*\*\ If\ you\ need\ an\ older\ version,\ you\ can\ downgrade\ with\ \'gem\ update\ --system\ OLD_VERSION\'.\ \*\*\\033\[0m\"'
+'\ \ echo\ \"\"'
+'\ \ if\ \[\[\ \"\$\(travis_vers2int\ \"\$\(ruby\ -e\ \'puts\ RUBY_VERSION\'\)\"\)\"\ -lt\ \"\$\(travis_vers2int\ \"2.3.0\"\)\"\ \]\]\;\ then'
+'\ \ \ \ gem\ update\ --system\ 2.7.8\ \&\>/dev/null'
+'\ \ else'
+'\ \ \ \ gem\ update\ --system\ \&\>/dev/null'
+'\ \ fi'
+'fi'
+' > ${TRAVIS_HOME}/.rvm/hooks/after_use
+chmod +x ${TRAVIS_HOME}/.rvm/hooks/after_use
+[[ -n "$(yarn global bin 2>/dev/null | grep /)" && ! :$PATH: =~ :$(yarn global bin 2>/dev/null | grep /): ]] && export PATH="$PATH:$(yarn global bin 2>/dev/null | grep /)"
+
+function curl() {
+  command curl --retry 2 -sS "$@"
+}
+
+if [[ $TRAVIS_FILTERED = redirect_io ]]; then
+  cat <<\EOPY >~/nonblock.py
+import os
+import sys
+import fcntl
+
+flags_stdout = fcntl.fcntl(sys.stdout, fcntl.F_GETFL)
+fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags_stdout&~os.O_NONBLOCK)
+
+flags_stderr = fcntl.fcntl(sys.stderr, fcntl.F_GETFL)
+fcntl.fcntl(sys.stderr, fcntl.F_SETFL, flags_stderr&~os.O_NONBLOCK)
+EOPY
+  python ~/nonblock.py
+  rm ~/nonblock.py
+fi
+
+declare -a _TRAVIS_APT_MIRRORS_BY_INFRASTRUCTURE
+_TRAVIS_APT_MIRRORS_BY_INFRASTRUCTURE+=(ec2::http://us-east-1.ec2.archive.ubuntu.com/ubuntu/)
+_TRAVIS_APT_MIRRORS_BY_INFRASTRUCTURE+=(gce::http://us-east-1.ec2.archive.ubuntu.com/ubuntu/)
+_TRAVIS_APT_MIRRORS_BY_INFRASTRUCTURE+=(packet::http://archive.ubuntu.com/ubuntu/)
+_TRAVIS_APT_MIRRORS_BY_INFRASTRUCTURE+=(unknown::http://archive.ubuntu.com/ubuntu/)
+travis_munge_apt_sources() {
+  if ! command -v apt-get &>/dev/null; then
+    return
+  fi
+
+  local src="${TRAVIS_ROOT}/etc/apt/sources.list"
+  src="${src//\/\//\/}"
+  local tmp_dest="${TRAVIS_TMPDIR}/etc-apt-sources.list"
+  tmp_dest="${tmp_dest//\/\//\/}"
+
+  if [[ ! -f "${src}" ]]; then
+    return
+  fi
+
+  local mirror
+  for entry in "${_TRAVIS_APT_MIRRORS_BY_INFRASTRUCTURE[@]}"; do
+    if [[ "${entry%%::*}" == "${TRAVIS_INFRA}" ]]; then
+      mirror="${entry##*::}"
+    fi
+  done
+
+  if [[ ! "${mirror}" ]]; then
+    return
+  fi
+
+  sed -e "s,http://.*\\.ubuntu\\.com/ubuntu/,${mirror}," \
+    "${src}" >"${tmp_dest}"
+  sudo mv "${src}" "${src}.travis-build.bak"
+  sudo mv "${tmp_dest}" "${src}"
+}
+
+travis_munge_apt_sources
+travis_setup_apt_proxy() {
+  if [[ ! "${TRAVIS_APT_PROXY}" ]]; then
+    return
+  fi
+
+  local dest_dir='/etc/apt/apt.conf.d'
+
+  if [[ ! -d "${dest_dir}" ]]; then
+    return
+  fi
+
+  if ! sudo -n echo &>/dev/null; then
+    return
+  fi
+
+  if ! curl --connect-timeout 5 -fsSL -o /dev/null \
+    "${TRAVIS_APT_PROXY}/__squignix_health__" &>/dev/null; then
+    return
+  fi
+
+  (
+    cat <<EOCONF
+Acquire::http::Proxy "${TRAVIS_APT_PROXY}";
+Acquire::https::Proxy false;
+Acquire::http::Proxy::download.oracle.com "DIRECT";
+Acquire::https::Proxy::download.oracle.com "DIRECT";
+Acquire::http::Proxy::*.java.net "DIRECT";
+Acquire::https::Proxy::*.java.net "DIRECT";
+EOCONF
+  ) | sudo tee "${dest_dir}/99-travis-apt-proxy" &>/dev/null
+}
+
+travis_setup_apt_proxy
+
+if [[ ("$TRAVIS_DIST" != precise || "$TRAVIS_OS_NAME" == linux) && "$(which heroku)" =~ heroku ]]; then
+  travis_cmd sudo\ bash\ -c\ \''
+  '\ \ cd\ /usr/lib'
+  '\ \ \(curl\ -sfSL\ https://cli-assets.heroku.com/heroku-linux-x64.tar.xz\ \|\ tar\ Jx\)\ \&\&'
+  '\ \ ln\ -sf\ /usr/lib/heroku/bin/heroku\ /usr/bin/heroku'
+  '\''
+  '
+  if [[ $? -eq 0 ]]; then
+    travis_cmd sudo\ bash\ -c\ \''
+    '\ \ rm\ -rf\ /usr/local/heroku'
+    '\ \ apt-get\ purge\ -y\ heroku-toolbelt\ heroku\ \&\>/dev/null'
+    '\''
+    '
+  else
+    echo -e "\033[31;1mFailed to update Heroku CLI\033[0m"
+  fi
+fi
+
+if [ "$TRAVIS_OS_NAME" = osx ] && ! declare -f shell_session_update >/dev/null; then
+  shell_session_update() { :; }
+  export -f shell_session_update
+fi
+
+travis_fold start docker_mtu
+  sudo test -f /etc/docker/daemon.json
+  if [[ $? = 0 ]]; then
+    echo '[{"op":"add","path":"/mtu","value":1460}]' > mtu.jsonpatch
+    sudo jsonpatch /etc/docker/daemon.json mtu.jsonpatch > daemon.json
+    sudo mv daemon.json /etc/docker/daemon.json
+  else
+    echo '{"mtu":1460}' | sudo tee /etc/docker/daemon.json > /dev/null
+  fi
+  
+  sudo service docker restart
+travis_fold end docker_mtu
+
+travis_fold start resolvconf
+  echo "options timeout:5"  | sudo tee -a /etc/resolvconf/resolv.conf.d/tail >/dev/null
+  echo "options attempts:5" | sudo tee -a /etc/resolvconf/resolv.conf.d/tail >/dev/null
+  sudo service resolvconf restart
+travis_fold end resolvconf
+
+:
+}
+
+function travis_run_prepare() {
+export PS4=+
+:
+}
+
+function travis_run_disable_sudo() {
+:
+}
+
+function travis_run_checkout() {
+export GIT_ASKPASS=echo
+echo
+
+travis_fold start git.checkout
+  if [[ ! -d karony/wicc-waykimix/.git ]]; then
+    travis_cmd git\ clone\ --depth\=50\ --branch\=master\ https://github.com/karony/wicc-waykimix.git\ karony/wicc-waykimix --echo --retry --timing
+    if [[ $? -ne 0 ]]; then
+      echo -e "\033[31;1mFailed to clone from GitHub.\033[0m"
+      echo -e "Checking GitHub status (https://status.github.com/api/last-message.json):"
+      curl -sL https://status.github.com/api/last-message.json | jq -r .[]
+      travis_terminate 1
+    fi
+  else
+    travis_cmd git\ -C\ karony/wicc-waykimix\ fetch\ origin --assert --echo --retry --timing
+    travis_cmd git\ -C\ karony/wicc-waykimix\ reset\ --hard --assert --echo
+  fi
+  travis_cmd cd\ karony/wicc-waykimix --echo
+  travis_cmd git\ checkout\ -qf\ a5c4b09a9169f20d714ee877f0031231aaed4989 --assert --echo
+travis_fold end git.checkout
+
+echo
+
+if [[ -f .gitmodules ]]; then
+  travis_fold start git.submodule
+    echo Host\ github.com'
+    '\	StrictHostKeyChecking\ no'
+    ' >> ~/.ssh/config
+    travis_cmd git\ submodule\ update\ --init\ --recursive --assert --echo --retry --timing
+  travis_fold end git.submodule
+fi
+
+:
+}
+
+function travis_run_export() {
+export TRAVIS=true
+export CI=true
+export CONTINUOUS_INTEGRATION=true
+export PAGER=cat
+export HAS_JOSH_K_SEAL_OF_APPROVAL=true
+export TRAVIS_ALLOW_FAILURE=false
+export TRAVIS_EVENT_TYPE=push
+export TRAVIS_PULL_REQUEST=false
+export TRAVIS_SECURE_ENV_VARS=false
+export TRAVIS_BUILD_ID=113967218
+export TRAVIS_BUILD_NUMBER=18
+export TRAVIS_BUILD_DIR=${HOME}/build/karony/wicc-waykimix
+export TRAVIS_BUILD_WEB_URL=https://travis-ci.com/karony/wicc-waykimix/builds/113967218
+export TRAVIS_JOB_ID=204686807
+export TRAVIS_JOB_NAME=''
+export TRAVIS_JOB_NUMBER=18.4
+export TRAVIS_JOB_WEB_URL=https://travis-ci.com/karony/wicc-waykimix/jobs/204686807
+export TRAVIS_BRANCH=master
+export TRAVIS_COMMIT=a5c4b09a9169f20d714ee877f0031231aaed4989
+export TRAVIS_COMMIT_MESSAGE=$(git log --format=%B -n 1 | head -c 32768)
+export TRAVIS_COMMIT_RANGE=d2d4a5865e01...a5c4b09a9169
+export TRAVIS_REPO_SLUG=karony/wicc-waykimix
+export TRAVIS_OSX_IMAGE=''
+export TRAVIS_LANGUAGE=node_js
+export TRAVIS_TAG=''
+export TRAVIS_SUDO=true
+export TRAVIS_BUILD_STAGE_NAME=''
+export TRAVIS_PULL_REQUEST_BRANCH=''
+export TRAVIS_PULL_REQUEST_SHA=''
+export TRAVIS_PULL_REQUEST_SLUG=''
+echo
+echo -e "\033[33;1mSetting environment variables from repository settings\033[0m"
+travis_cmd export\ U_EMAIL\=lirouwyyx@163.com --echo
+travis_cmd export\ GITHUB_ORIGIN\=github.com/karony/wicc-waykimix.git --echo
+travis_cmd export\ PUSH_BRANCH\=upload --echo
+travis_cmd export\ U_NAME\=karony --echo
+travis_cmd export\ GITHUB_TOKEN\=91dc1ef58c1a98cc325ef61917aab3f40e011b08 --echo
+echo
+echo -e "\033[33;1mSetting environment variables from .travis.yml\033[0m"
+travis_cmd export\ TAR_NAME\=\"dist\" --echo
+echo
+export TRAVIS_NODE_VERSION=stable
+:
+}
+
+function travis_run_setup() {
+mkdir -p ${TRAVIS_HOME}/.nvm
+curl -s -o ${TRAVIS_HOME}/.nvm/nvm.sh   https://build.travis-ci.com/files/nvm.sh
+curl -s -o ${TRAVIS_HOME}/.nvm/nvm-exec https://build.travis-ci.com/files/nvm-exec
+chmod 0755 ${TRAVIS_HOME}/.nvm/nvm.sh ${TRAVIS_HOME}/.nvm/nvm-exec
+source ${TRAVIS_HOME}/.nvm/nvm.sh
+
+if [[ $(echo :$PATH: | grep -v :./node_modules/.bin:) ]]; then
+  export PATH=./node_modules/.bin:$PATH
+fi
+
+travis_fold start nvm.install
+  travis_cmd nvm\ install\ stable --echo --timing
+  if [[ $? -ne 0 ]]; then
+    echo -e "\033[31;1mFailed to install stable. Remote repository may not be reachable.\033[0m"
+    echo -e "Using locally available version stable, if applicable."
+    travis_cmd nvm\ use\ stable --echo
+    if [[ $? -ne 0 ]]; then
+      echo -e "\033[31;1mUnable to use stable\033[0m"
+      travis_cmd false --assert
+    fi
+  fi
+  export TRAVIS_NODE_VERSION=stable
+travis_fold end nvm.install
+
+echo
+
+if [[ $(command -v sw_vers) && -f ${TRAVIS_HOME}/.npmrc ]]; then
+  travis_cmd npm\ config\ delete\ prefix --assert --echo --timing
+fi
+
+travis_cmd npm\ config\ set\ spin\ false --assert
+travis_cmd npm\ config\ set\ progress\ false --assert
+
+if [[ -f yarn.lock ]]; then
+  if [[ $(travis_vers2int $(echo `node --version` | tr -d 'v')) -lt $(travis_vers2int 4) ]]; then
+    echo -e "\033[31;1mNode.js version $(node --version) does not meet requirement for yarn. Please use Node.js 4 or later.\033[0m"
+  else
+    if [[ -z "$(command -v yarn)" ]]; then
+      travis_fold start install.yarn
+        if [[ -z "$(command -v gpg)" ]]; then
+          travis_cmd export\ YARN_GPG\=no --echo
+        fi
+        echo -e "\033[32;1mInstalling yarn\033[0m"
+        travis_cmd curl\ -o-\ -L\ https://yarnpkg.com/install.sh\ \|\ bash --assert --echo --timing
+        echo -e "\033[32;1mSetting up \$PATH\033[0m"
+        travis_cmd export\ PATH\=\$\{TRAVIS_HOME\}/.yarn/bin:\$PATH --echo
+      travis_fold end install.yarn
+    fi
+  fi
+fi
+
+:
+}
+
+function travis_run_setup_casher() {
+
+travis_fold start cache.1
+  echo -e "Setting up build cache"
+  rvm use $(rvm current 2>/dev/null) >&/dev/null
+  travis_cmd export\ CASHER_DIR\=\$\{TRAVIS_HOME\}/.casher --echo
+  mkdir -p $CASHER_DIR/bin
+  travis_cmd curl\ -sf\ \ -o\ \$CASHER_DIR/bin/casher\ https://build.travis-ci.com/files/casher --echo --display Installing\ caching\ utilities --retry --timing
+  if [[ $? -ne 0 ]]; then
+    travis_cmd curl\ -sf\ \ -o\ \$CASHER_DIR/bin/casher\ https://raw.githubusercontent.com/travis-ci/casher/production/bin/casher --echo --display Installing\ caching\ utilities\ from\ the\ Travis\ CI\ server\ \(https://build.travis-ci.com/files/casher\)\ failed,\ failing\ over\ to\ using\ GitHub\ \(https://raw.githubusercontent.com/travis-ci/casher/production/bin/casher\) --retry --timing
+  fi
+  if [[ $? -ne 0 ]]; then
+    echo -e "\033[33;1mFailed to fetch casher from GitHub, disabling cache.\033[0m"
+  fi
+  if [[ -f $CASHER_DIR/bin/casher ]]; then
+    chmod +x $CASHER_DIR/bin/casher
+  fi
+  if [[ $- = *e* ]]; then
+    ERREXIT_SET=true
+  fi
+  set +e
+  if [[ -f $CASHER_DIR/bin/casher ]]; then
+    if [[ -e ~/.rvm/scripts/rvm ]]; then
+      travis_cmd type\ rvm\ \&\>/dev/null\ \|\|\ source\ \~/.rvm/scripts/rvm --timing
+      travis_cmd rvm\ \$\(travis_internal_ruby\)\ --fuzzy\ do\ \$CASHER_DIR/bin/casher\ fetch\ https://travis-cache-production-com-gce.storage.googleapis.com/189365737/master/cache-linux-trusty-ca5b9ce6233c62de5df4dc8818bf07ba4df0963ac0c619adab7621efec2c1da3--node-stable.tgz\\\?Expires\\\=1559374923\\\&GoogleAccessId\\\=GOOGT6Z4BZGAT6CRK7OS\\\&Signature\\\=jzkSqc0cQEtqquVHo6H9By7SjiM\\\%3D\ https://travis-cache-production-com-gce.storage.googleapis.com/189365737/master/cache--node-stable.tgz\\\?Expires\\\=1559374923\\\&GoogleAccessId\\\=GOOGT6Z4BZGAT6CRK7OS\\\&Signature\\\=vA2d1FdkaKphTw\\\%2FfxgrI00iBMJo\\\%3D --timing
+    else
+      travis_cmd \$CASHER_DIR/bin/casher\ fetch\ https://travis-cache-production-com-gce.storage.googleapis.com/189365737/master/cache-linux-trusty-ca5b9ce6233c62de5df4dc8818bf07ba4df0963ac0c619adab7621efec2c1da3--node-stable.tgz\\\?Expires\\\=1559374923\\\&GoogleAccessId\\\=GOOGT6Z4BZGAT6CRK7OS\\\&Signature\\\=jzkSqc0cQEtqquVHo6H9By7SjiM\\\%3D\ https://travis-cache-production-com-gce.storage.googleapis.com/189365737/master/cache--node-stable.tgz\\\?Expires\\\=1559374923\\\&GoogleAccessId\\\=GOOGT6Z4BZGAT6CRK7OS\\\&Signature\\\=vA2d1FdkaKphTw\\\%2FfxgrI00iBMJo\\\%3D --timing
+    fi
+  fi
+  if [[ -n $ERREXIT_SET ]]; then
+    set -e
+  fi
+  if [[ $- = *e* ]]; then
+    ERREXIT_SET=true
+  fi
+  set +e
+  if [[ -f $CASHER_DIR/bin/casher ]]; then
+    if [[ -e ~/.rvm/scripts/rvm ]]; then
+      travis_cmd type\ rvm\ \&\>/dev/null\ \|\|\ source\ \~/.rvm/scripts/rvm --timing
+      travis_cmd rvm\ \$\(travis_internal_ruby\)\ --fuzzy\ do\ \$CASHER_DIR/bin/casher\ add\ node_modules --timing
+    else
+      travis_cmd \$CASHER_DIR/bin/casher\ add\ node_modules --timing
+    fi
+  fi
+  if [[ -n $ERREXIT_SET ]]; then
+    set -e
+  fi
+travis_fold end cache.1
+
+echo
+:
+}
+
+function travis_run_setup_cache() {
+
+if [[ -z "$(command -v yarn)" ]]; then
+  travis_fold start install.yarn
+    if [[ -z "$(command -v gpg)" ]]; then
+      travis_cmd export\ YARN_GPG\=no --echo
+    fi
+    echo -e "\033[32;1mInstalling yarn\033[0m"
+    travis_cmd curl\ -o-\ -L\ https://yarnpkg.com/install.sh\ \|\ bash --assert --echo --timing
+    echo -e "\033[32;1mSetting up \$PATH\033[0m"
+    travis_cmd export\ PATH\=\$\{TRAVIS_HOME\}/.yarn/bin:\$PATH --echo
+  travis_fold end install.yarn
+fi
+
+travis_fold start cache.yarn
+  echo
+  if [[ $- = *e* ]]; then
+    ERREXIT_SET=true
+  fi
+  set +e
+  if [[ -f $CASHER_DIR/bin/casher ]]; then
+    if [[ -e ~/.rvm/scripts/rvm ]]; then
+      travis_cmd type\ rvm\ \&\>/dev/null\ \|\|\ source\ \~/.rvm/scripts/rvm --timing
+      travis_cmd rvm\ \$\(travis_internal_ruby\)\ --fuzzy\ do\ \$CASHER_DIR/bin/casher\ add\ \$\(dirname\ \$\(yarn\ cache\ dir\)\) --timing
+    else
+      travis_cmd \$CASHER_DIR/bin/casher\ add\ \$\(dirname\ \$\(yarn\ cache\ dir\)\) --timing
+    fi
+  fi
+  if [[ -n $ERREXIT_SET ]]; then
+    set -e
+  fi
+travis_fold end cache.yarn
+
+:
+}
+
+function travis_run_announce() {
+travis_cmd node\ --version --echo
+travis_cmd npm\ --version --echo
+travis_cmd nvm\ --version --echo
+
+if [[ -f yarn.lock ]]; then
+  travis_cmd yarn\ --version --echo
+  hash -d yarn
+fi
+
+echo
+:
+}
+
+function travis_run_debug() {
+:
+}
+
+function travis_run_before_install() {
+:
+}
+
+function travis_run_install() {
+
+travis_fold start install
+  travis_cmd npm\ install --assert --echo --timing
+travis_fold end install
+
+:
+}
+
+function travis_run_before_script() {
+:
+}
+
+function travis_run_script() {
+travis_cmd npm\ run\ build --echo --timing
+travis_result $?
+:
+}
+
+function travis_run_before_cache() {
+:
+}
+
+function travis_run_cache() {
+
+travis_fold start cache.2
+  echo -e "store build cache"
+  if [[ $- = *e* ]]; then
+    ERREXIT_SET=true
+  fi
+  set +e
+  if [[ -n $ERREXIT_SET ]]; then
+    set -e
+  fi
+  if [[ $- = *e* ]]; then
+    ERREXIT_SET=true
+  fi
+  set +e
+  if [[ -f $CASHER_DIR/bin/casher ]]; then
+    if [[ -e ~/.rvm/scripts/rvm ]]; then
+      travis_cmd type\ rvm\ \&\>/dev/null\ \|\|\ source\ \~/.rvm/scripts/rvm --timing
+      travis_cmd rvm\ \$\(travis_internal_ruby\)\ --fuzzy\ do\ \$CASHER_DIR/bin/casher\ push\ https://travis-cache-production-com-gce.storage.googleapis.com/189365737/master/cache-linux-trusty-ca5b9ce6233c62de5df4dc8818bf07ba4df0963ac0c619adab7621efec2c1da3--node-stable.tgz\\\?Expires\\\=1559380923\\\&GoogleAccessId\\\=GOOGT6Z4BZGAT6CRK7OS\\\&Signature\\\=fyCJo\\\%2FzBPwRUFuP6syvGFfQlTJE\\\%3D --timing
+    else
+      travis_cmd \$CASHER_DIR/bin/casher\ push\ https://travis-cache-production-com-gce.storage.googleapis.com/189365737/master/cache-linux-trusty-ca5b9ce6233c62de5df4dc8818bf07ba4df0963ac0c619adab7621efec2c1da3--node-stable.tgz\\\?Expires\\\=1559380923\\\&GoogleAccessId\\\=GOOGT6Z4BZGAT6CRK7OS\\\&Signature\\\=fyCJo\\\%2FzBPwRUFuP6syvGFfQlTJE\\\%3D --timing
+    fi
+  fi
+  if [[ -n $ERREXIT_SET ]]; then
+    set -e
+  fi
+travis_fold end cache.2
+
+echo
+:
+}
+
+function travis_run_reset_state() {
+:
+}
+
+function travis_run_after_success() {
+:
+}
+
+function travis_run_after_failure() {
+:
+}
+
+function travis_run_after_script() {
+
+travis_fold start after_script.1
+  travis_cmd ls --echo --timing
+travis_fold end after_script.1
+
+travis_fold start after_script.2
+  travis_cmd echo\ \$\{ARTIFACTS_PROD\} --echo --timing
+travis_fold end after_script.2
+
+travis_fold start after_script.3
+  travis_cmd echo\ \$\{TAR_NAME\} --echo --timing
+travis_fold end after_script.3
+
+travis_fold start after_script.4
+  travis_cmd tar\ zcf\ \$\{ARTIFACTS_PROD\}\ \$\{TAR_NAME\} --echo --timing
+travis_fold end after_script.4
+
+travis_fold start after_script.5
+  travis_cmd mkdir\ \$\{PUSH_DIRNAME\} --echo --timing
+travis_fold end after_script.5
+
+travis_fold start after_script.6
+  travis_cmd ls --echo --timing
+travis_fold end after_script.6
+
+travis_fold start after_script.7
+  travis_cmd cp\ -a\ \$\{ARTIFACTS_PROD\}\ \$\{PUSH_DIRNAME\} --echo --timing
+travis_fold end after_script.7
+
+travis_fold start after_script.8
+  travis_cmd cd\ \$\{PUSH_DIRNAME\} --echo --timing
+travis_fold end after_script.8
+
+travis_fold start after_script.9
+  travis_cmd pwd --echo --timing
+travis_fold end after_script.9
+
+travis_fold start after_script.10
+  travis_cmd ls --echo --timing
+travis_fold end after_script.10
+
+travis_fold start after_script.11
+  travis_cmd git\ init --echo --timing
+travis_fold end after_script.11
+
+travis_fold start after_script.12
+  travis_cmd git\ checkout\ -b\ \$\{PUSH_BRANCH\} --echo --timing
+travis_fold end after_script.12
+
+travis_fold start after_script.13
+  travis_cmd git\ config\ user.name\ \"\$\{U_NAME\}\" --echo --timing
+travis_fold end after_script.13
+
+travis_fold start after_script.14
+  travis_cmd git\ config\ user.email\ \"\$\{U_EMAIL\}\" --echo --timing
+travis_fold end after_script.14
+
+travis_fold start after_script.15
+  travis_cmd git\ add\ . --echo --timing
+travis_fold end after_script.15
+
+travis_fold start after_script.16
+  travis_cmd git\ commit\ -m\ \"Update\ tools\"\ \&\>\ /dev/null --echo --timing
+travis_fold end after_script.16
+
+travis_fold start after_script.17
+  travis_cmd git\ remote\ add\ origin\ https://\$\{GITHUB_TOKEN\}@\$\{GITHUB_ORIGIN\} --echo --timing
+travis_fold end after_script.17
+
+travis_fold start after_script.18
+  travis_cmd git\ push\ --quiet\ --set-upstream\ --force\ origin\ \$\{PUSH_BRANCH\} --echo --timing
+travis_fold end after_script.18
+
+:
+}
+
+function travis_run_finish() {
+:
+}
+

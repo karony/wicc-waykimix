@@ -1,0 +1,64 @@
+* Hostname was NOT found in DNS cache
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 173.194.197.128...
+* Connected to travis-cache-production-com-gce.storage.googleapis.com (173.194.197.128) port 443 (#0)
+* successfully set certificate verify locations:
+*   CAfile: none
+  CApath: /etc/ssl/certs
+* SSLv3, TLS handshake, Client hello (1):
+} [data not shown]
+* SSLv3, TLS handshake, Server hello (2):
+{ [data not shown]
+* SSLv3, TLS handshake, CERT (11):
+{ [data not shown]
+* SSLv3, TLS handshake, Server key exchange (12):
+{ [data not shown]
+* SSLv3, TLS handshake, Server finished (14):
+{ [data not shown]
+* SSLv3, TLS handshake, Client key exchange (16):
+} [data not shown]
+* SSLv3, TLS change cipher, Client hello (1):
+} [data not shown]
+* SSLv3, TLS handshake, Finished (20):
+} [data not shown]
+* SSLv3, TLS change cipher, Client hello (1):
+{ [data not shown]
+* SSLv3, TLS handshake, Finished (20):
+{ [data not shown]
+* SSL connection using ECDHE-RSA-AES128-GCM-SHA256
+* Server certificate:
+* 	 subject: C=US; ST=California; L=Mountain View; O=Google LLC; CN=*.storage.googleapis.com
+* 	 start date: 2019-05-14 13:33:43 GMT
+* 	 expire date: 2019-08-06 13:20:00 GMT
+* 	 subjectAltName: travis-cache-production-com-gce.storage.googleapis.com matched
+* 	 issuer: C=US; O=Google Trust Services; CN=Google Internet Authority G3
+* 	 SSL certificate verify ok.
+> PUT /189365737/master/cache-linux-trusty-ca5b9ce6233c62de5df4dc8818bf07ba4df0963ac0c619adab7621efec2c1da3--node-stable.tgz?Expires=1559380923&GoogleAccessId=GOOGT6Z4BZGAT6CRK7OS&Signature=fyCJo%2FzBPwRUFuP6syvGFfQlTJE%3D HTTP/1.1
+> User-Agent: curl/7.35.0
+> Host: travis-cache-production-com-gce.storage.googleapis.com
+> Accept: */*
+> Content-Length: 59097680
+> Expect: 100-continue
+> 
+< HTTP/1.1 100 Continue
+} [data not shown]
+ 41 56.3M    0     0   41 23.3M      0  86.1M --:--:-- --:--:-- --:--:-- 85.9M* We are completely uploaded and fine
+< HTTP/1.1 200 OK
+< X-GUploader-UploadID: AEnB2Uqc5OREX4mqCbY9YhID19BQ5ZKfftXD3tYsCNTD6XTP_emklgGzqV6R-0XcTmKBdxBMcQAuvPAFus4-uzJR2K4t7WxeYkI1rvNu3oSsmW94Jl4-ldk
+< ETag: "a402b069c60bb1122fc4a41b1286c18e"
+< x-goog-generation: 1559373847684500
+< x-goog-metageneration: 1
+< x-goog-hash: crc32c=EYDpSg==
+< x-goog-hash: md5=pAKwacYLsRIvxKQbEobBjg==
+< x-goog-stored-content-length: 59097680
+< x-goog-stored-content-encoding: identity
+< Vary: Origin
+< Content-Length: 0
+< Date: Sat, 01 Jun 2019 07:24:07 GMT
+* Server UploadServer is not blacklisted
+< Server: UploadServer
+< Content-Type: text/html; charset=UTF-8
+< 
+100 56.3M    0     0  100 56.3M      0  62.8M --:--:-- --:--:-- --:--:-- 62.8M
+* Connection #0 to host travis-cache-production-com-gce.storage.googleapis.com left intact

@@ -1,0 +1,107 @@
+
+this is a debug log for diagnosing/reporting problems in bzr
+you can delete or truncate this file, or include sections in
+bug reports to https://bugs.launchpad.net/bzr/+filebug
+
+Tue 2017-12-05 20:00:42 +0000
+0.353  bazaar version: 2.7.0dev1
+0.353  bzr arguments: [u'version']
+0.356  looking for plugins in /home/travis/.bazaar/plugins
+0.356  looking for plugins in /usr/lib/python2.7/dist-packages/bzrlib/plugins
+0.435  encoding stdout as osutils.get_user_encoding() 'utf-8'
+0.441  return code 0
+
+Tue 2017-12-05 20:00:43 +0000
+0.034  bazaar version: 2.7.0dev1
+0.034  bzr arguments: [u'init', u'/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project']
+0.038  looking for plugins in /home/travis/.bazaar/plugins
+0.038  looking for plugins in /usr/lib/python2.7/dist-packages/bzrlib/plugins
+0.048  encoding stdout as osutils.get_user_encoding() 'utf-8'
+0.337  creating repository in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/.
+0.366  creating branch <bzrlib.branch.BzrBranchFormat7 object at 0x7f39cc610c10> in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/
+0.373  trying to create missing lock '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/checkout/dirstate'
+0.377  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.432  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.476  return code 0
+
+Tue 2017-12-05 20:00:43 +0000
+0.033  bazaar version: 2.7.0dev1
+0.034  bzr arguments: [u'status']
+0.038  looking for plugins in /home/travis/.bazaar/plugins
+0.038  looking for plugins in /usr/lib/python2.7/dist-packages/bzrlib/plugins
+0.049  encoding stdout as osutils.get_user_encoding() 'utf-8'
+0.072  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.075  check paths: None
+0.098  creating config directory: '/home/travis/.bazaar'
+0.103  return code 0
+
+Tue 2017-12-05 20:00:44 +0000
+0.034  bazaar version: 2.7.0dev1
+0.034  bzr arguments: [u'add', u'test.txt']
+0.037  looking for plugins in /home/travis/.bazaar/plugins
+0.037  looking for plugins in /usr/lib/python2.7/dist-packages/bzrlib/plugins
+0.047  encoding stdout as osutils.get_user_encoding() 'utf-8'
+0.063  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.076  return code 0
+
+Tue 2017-12-05 20:00:44 +0000
+0.033  bazaar version: 2.7.0dev1
+0.033  bzr arguments: [u'status']
+0.036  looking for plugins in /home/travis/.bazaar/plugins
+0.036  looking for plugins in /usr/lib/python2.7/dist-packages/bzrlib/plugins
+0.046  encoding stdout as osutils.get_user_encoding() 'utf-8'
+0.063  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.067  check paths: None
+0.070  return code 0
+
+Tue 2017-12-05 20:00:44 +0000
+0.034  bazaar version: 2.7.0dev1
+0.035  bzr arguments: [u'init', u'/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project']
+0.038  looking for plugins in /home/travis/.bazaar/plugins
+0.038  looking for plugins in /usr/lib/python2.7/dist-packages/bzrlib/plugins
+0.048  encoding stdout as osutils.get_user_encoding() 'utf-8'
+0.067  creating repository in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/.
+0.070  creating branch <bzrlib.branch.BzrBranchFormat7 object at 0x7f4258f29c10> in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/
+0.076  trying to create missing lock '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/checkout/dirstate'
+0.080  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.094  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.101  return code 0
+
+Tue 2017-12-05 20:00:44 +0000
+0.035  bazaar version: 2.7.0dev1
+0.035  bzr arguments: [u'init', u'/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project']
+0.041  looking for plugins in /home/travis/.bazaar/plugins
+0.041  looking for plugins in /usr/lib/python2.7/dist-packages/bzrlib/plugins
+0.052  encoding stdout as osutils.get_user_encoding() 'utf-8'
+0.072  creating repository in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/.
+0.075  creating branch <bzrlib.branch.BzrBranchFormat7 object at 0x7f527a619c10> in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/
+0.080  trying to create missing lock '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/checkout/dirstate'
+0.084  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.098  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.105  return code 0
+
+Tue 2017-12-05 20:00:44 +0000
+0.036  bazaar version: 2.7.0dev1
+0.036  bzr arguments: [u'init', u'/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project']
+0.040  looking for plugins in /home/travis/.bazaar/plugins
+0.040  looking for plugins in /usr/lib/python2.7/dist-packages/bzrlib/plugins
+0.050  encoding stdout as osutils.get_user_encoding() 'utf-8'
+0.071  creating repository in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/.
+0.074  creating branch <bzrlib.branch.BzrBranchFormat7 object at 0x7f7292eb3c10> in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/
+0.080  trying to create missing lock '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/checkout/dirstate'
+0.084  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.097  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.104  return code 0
+
+Tue 2017-12-05 20:00:44 +0000
+0.033  bazaar version: 2.7.0dev1
+0.033  bzr arguments: [u'init', u'/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project']
+0.036  looking for plugins in /home/travis/.bazaar/plugins
+0.036  looking for plugins in /usr/lib/python2.7/dist-packages/bzrlib/plugins
+0.046  encoding stdout as osutils.get_user_encoding() 'utf-8'
+0.067  creating repository in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/.
+0.070  creating branch <bzrlib.branch.BzrBranchFormat7 object at 0x7fc61211dc10> in file:///tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/
+0.077  trying to create missing lock '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project/.bzr/checkout/dirstate'
+0.081  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.095  opening working tree '/tmp/packer-templates-20171205-26299-1vja0cz-rspec/bzr-project'
+0.102  return code 0

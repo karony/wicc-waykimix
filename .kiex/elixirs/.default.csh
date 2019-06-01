@@ -1,0 +1,1 @@
+/home/travis/.kiex/elixirs/.elixir-1.4.5.env.csh
