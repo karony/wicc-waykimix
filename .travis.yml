@@ -23,7 +23,7 @@ after_script:
   - pwd
   - ls
   - git init
-  - git checkout ${PUSH_BRANCH}
+  - git checkout -b ${PUSH_BRANCH}
   - git config user.name "${U_NAME}"
   - git config user.email "${U_EMAIL}"
   - git add .
