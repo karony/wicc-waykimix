@@ -12,10 +12,10 @@ cache:
     - node_modules
     
 env:
-  - PUSH_BRANCH=travic_upload
-  - PUSH_DIRNAME=travic_upload
-  - ARTIFACTS_PROD=wicc-waykimix.tar.gz
-  - TAR_NAME=dist
+  - PUSH_BRANCH="travic_upload"
+  - PUSH_DIRNAME="travic_upload"
+  - ARTIFACTS_PROD="wicc-waykimix.tar.gz"
+  - TAR_NAME="dist"
   
 install:
   - npm install
@@ -24,6 +24,9 @@ script:
   - npm run build
   
 after_script:
+  - ls 
+  - echo ${ARTIFACTS_PROD}
+  - echo ${TAR_NAME}
   - tar zcf ${ARTIFACTS_PROD} ${TAR_NAME}
   - mkdir ${PUSH_DIRNAME}
   - ls
