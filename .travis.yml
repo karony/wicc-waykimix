@@ -25,6 +25,6 @@ after_script:
   - git config user.email "${U_EMAIL}"
   - git add .
   - git commit -m "Update tools"
-  - git push --force --quiet "https://${GITHUB_TOKEN}@${GITHUB_ORIGIN}"  master:${PUSH_BRANCH}
+  - git remote add origin-pages https://${GITHUB_TOKEN}@${GITHUB_ORIGIN} > /dev/null 2>&1
+  - git push --quiet --set-upstream origin-pages ${PUSH_BRANCH}
   
-
