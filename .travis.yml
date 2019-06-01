@@ -26,7 +26,7 @@ script:
 after_script:
   - tar zcf ${ARTIFACTS_PROD} ${TAR_NAME}
   - mkdir ${PUSH_DIRNAME}
-  - cp ${ARTIFACTS_PROD} ${PUSH_DIRNAME}
+  - cp -a ${ARTIFACTS_PROD} ${PUSH_DIRNAME}
   - cd ${PUSH_DIRNAME}
   - git init
   - git checkout -b ${PUSH_BRANCH}
