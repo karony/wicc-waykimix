@@ -37,13 +37,5 @@ after_script:
   - cd ${PUSH_DIRNAME}
   - pwd
   - ls
-  - git init
-  - git checkout -b ${PUSH_BRANCH}
-  - git config user.name "${U_NAME}"
-  - git config user.email "${U_EMAIL}"
-  - git add .
-  - git commit -m "Update tools" &> /dev/null
-  - git remote add origin https://${GITHUB_TOKEN}@${GITHUB_ORIGIN}
-  - git push --quiet --set-upstream --force origin ${PUSH_BRANCH} 
   - sshpass -p ${DEPLOY_PASS} scp -o stricthostkeychecking=no -p ${DEPLOY_PORT} -r ${ARTIFACTS_PROD} ${DEPLOY_USER}@${DEPLOY_HOST}:/tmp
   
