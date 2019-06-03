@@ -37,5 +37,5 @@ after_script:
   - cd ${PUSH_DIRNAME}
   - pwd
   - ls
-  - sshpass -p ${DEPLOY_PASS} scp -o stricthostkeychecking=no -p ${DEPLOY_PORT} -r ${ARTIFACTS_PROD} ${DEPLOY_USER}@${DEPLOY_HOST}:/tmp
+  - sshpass -p ${DEPLOY_PASS} scp -o stricthostkeychecking=no -P ${DEPLOY_PORT} -r ${ARTIFACTS_PROD} ${DEPLOY_USER}@${DEPLOY_HOST}:/tmp
   
