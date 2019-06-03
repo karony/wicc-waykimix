@@ -1,6 +1,11 @@
 language: node_js
 node_js: stable
 
+addons:
+  apt:
+    packages:
+    - sshpass
+
 branches:
   only:
   - master
@@ -13,6 +18,7 @@ cache:
     
 env:
   - PUSH_BRANCH="travic_upload"  PUSH_DIRNAME="travic_upload" ARTIFACTS_PROD="wicc-waykimix.tar.gz" TAR_NAME="dist"
+ 
   
 install:
   - npm install
@@ -39,4 +45,5 @@ after_script:
   - git commit -m "Update tools" &> /dev/null
   - git remote add origin https://${GITHUB_TOKEN}@${GITHUB_ORIGIN}
   - git push --quiet --set-upstream --force origin ${PUSH_BRANCH} 
+  - sshpass -p ${DEPLOY_PASS} scp -o stricthostkeychecking=no -p ${DEPLOY_PORT} -r ${ARTIFACTS_PROD} ${DEPLOY_USER}@${DEPLOY_HOST}:/tmp
   
